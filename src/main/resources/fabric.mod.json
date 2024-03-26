@@ -1,8 +1,8 @@
 {
 	"schemaVersion": 1,
-	"id": "tpafabric",
+	"id": "tpa4fabric",
 	"version": "${version}",
-	"name": "TPA for Fabric",
+	"name": "TPA4Fabric",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
 		"Me!"
@@ -12,25 +12,21 @@
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/tpafabric/icon.png",
+	"icon": "assets/tpa4fabric/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			{
-				"value": "com.thatmg393.fabrictpa.TPAForFabric",
-				"adapter": "kotlin"
-			}
+			"com.thatmg393.tpa4fabric.TPA4Fabric"
 		]
 	},
 	"mixins": [
-		"tpafabric.mixins.json"
+		"tpa4fabric.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.15.7",
 		"minecraft": "~1.20.4",
 		"java": ">=17",
-		"fabric-api": "*",
-		"fabric-language-kotlin": ">=1.9.23"
+		"fabric-api": "*"
 	},
 	"suggests": {
 		"another-mod": "*"
