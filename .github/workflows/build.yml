@@ -1,0 +1,78 @@
+# Automatically build the project and run any configured tests for every push
+# and submitted pull request. This can help catch issues that only occur on
+# certain platforms or Java versions, and provides a first line of defence
+# against bad commits.
+
+name: build
+on: 
+  pull_request:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - '**.md'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        java: [ 17, 21 ]
+        os: [ ubuntu-22.04 ]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Setup jdk ${{ matrix.java }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
+
+      - name: Make gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build
+        id: build_bin
+        run: bash build.sh ${{ github.ref }}
+
+      - name: Capture build artifacts
+        if: ${{ matrix.java == '21' }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: tpa4fabric-build
+          path: build/libs/
+
+      - name: Update CHANGELOG.md
+        if: ${{ matrix.java == '21' && startsWith(steps.build_bin.outputs.binver, 'v') }}
+        uses: requarks/changelog-action@v1
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          tag: ${{ steps.build_bin.outputs.binver }}
+
+      - name: Upload to Modrinth
+        if: ${{ matrix.java == '21' && startsWith(steps.build_bin.outputs.binver, 'v') }}
+        uses: Kir-Antipov/mc-publish@v3.3
+        with: 
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN }}
+
+          name: TPA4Fabric ${{ steps.build_bin.outputs.binver }}
+          files: build/libs/tpa4fabric-${{ steps.build_bin.outputs.binver }}.jar
+          version-type: release
+ 
+          github-generate-changelog: true
+          github-draft: false
+          github-prerelease: false
+          changelog-file: CHANGELOG.md
+
+      - name: Commit CHANGELOG.md
+        if: ${{ matrix.java == '21' && startsWith(steps.build_bin.outputs.binver, 'v') }}
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: master
+          commit_message: 'Release: Update CHANGELOG.md for ${{ steps.build_bin.outputs.binver }} [skip ci]'
+          file_pattern: CHANGELOG.md
+ 
