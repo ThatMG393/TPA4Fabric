@@ -3,13 +3,13 @@
 	"id": "tpa4fabric",
 	"version": "${version}",
 	"name": "TPA4Fabric",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"description": "Yet Another TPA mod for Fabric.",
 	"authors": [
-		"Me!"
+		"ThatMG393"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/ThatMG393/TPA4Fabric",
+		"sources": "https://github.com/ThatMG393/TPA4Fabric"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/tpa4fabric/icon.png",
@@ -19,16 +19,11 @@
 			"com.thatmg393.tpa4fabric.TPA4Fabric"
 		]
 	},
-	"mixins": [
-		"tpa4fabric.mixins.json"
-	],
+	"mixins": [],
 	"depends": {
 		"fabricloader": ">=0.15.7",
 		"minecraft": "~1.20.4",
 		"java": ">=17",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
