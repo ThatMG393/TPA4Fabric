@@ -29,7 +29,7 @@ public class TPA4Fabric implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registry, env) -> {
 			dispatcher.register(
 				literal("tpa")
-				.requires(src -> src.hasPermissionLevel(1))
+				.requires(src -> src.hasPermissionLevel(0))
 				.then(
 					argument("to", EntityArgumentType.player())
 				    .executes(ctx -> TPAManager.getInstance().newTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "to")))
@@ -38,7 +38,7 @@ public class TPA4Fabric implements ModInitializer {
 
 			dispatcher.register(
 				literal("tpaccept")
-				.requires(src -> src.hasPermissionLevel(1))
+				.requires(src -> src.hasPermissionLevel(0))
 				.then(
 					argument("from", EntityArgumentType.player())
 				    .executes(ctx -> TPAManager.getInstance().acceptTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "from")))
