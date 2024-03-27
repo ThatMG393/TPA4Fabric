@@ -16,15 +16,15 @@ public class TPAManager {
         return INSTANCE;
     }
 
-    private TPAManager() {
-    }
+    private TPAManager() { }
 
     private HashMap<String, Long> playersOnCooldown = new HashMap<>();
     private HashMap<String, HashMap<String, TPARequest>> tpaRequests = new HashMap<>();
 
     public int newTPA(
-            ServerCommandSource context,
-            ServerPlayerEntity to) {
+        ServerCommandSource context,
+        ServerPlayerEntity to
+    ) {
         var me = context.getPlayer();
 
         if (me.equals(to)) {
@@ -48,11 +48,13 @@ public class TPAManager {
 
         var requests = tpaRequests.get(to.getUuidAsString());
         requests.put(
-                me.getUuidAsString(),
-                new TPARequest(
-                        requests,
-                        me,
-                        new Timer()));
+            me.getUuidAsString(),
+            new TPARequest(
+                requests,
+                me,
+                new Timer()
+            )
+        );
 
         markPlayerOnCooldown(me.getUuidAsString());
 
@@ -60,8 +62,9 @@ public class TPAManager {
     }
 
     public int acceptTPA(
-            ServerCommandSource context,
-            ServerPlayerEntity from) {
+        ServerCommandSource context,
+        ServerPlayerEntity from
+    ) {
         ServerPlayerEntity me = context.getPlayer();
         if (!doesPlayerHaveTPARequest(me.getUuidAsString())) {
             me.sendMessage(Text.of("You have no TPA request received."));
@@ -78,8 +81,9 @@ public class TPAManager {
     }
 
     public int denyTPA(
-            ServerCommandSource context,
-            ServerPlayerEntity from) {
+        ServerCommandSource context,
+        ServerPlayerEntity from
+    ) {
         ServerPlayerEntity me = context.getPlayer();
         if (!doesPlayerHaveTPARequest(me.getUuidAsString())) {
             me.sendMessage(Text.of("You have no TPA request received."));
