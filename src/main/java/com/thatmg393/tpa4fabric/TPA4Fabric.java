@@ -19,7 +19,7 @@ public class TPA4Fabric implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Using TPA4Fabric v" + FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion().getFriendlyString());
+		LOGGER.info("Using TPA4Fabric " + FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion().getFriendlyString());
 		LOGGER.info("Registering TPA4Fabric commands...");
 		registerCommands();
 		LOGGER.info("Registered, have fun!");
