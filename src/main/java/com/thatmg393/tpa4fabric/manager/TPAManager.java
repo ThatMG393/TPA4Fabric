@@ -62,8 +62,6 @@ public class TPAManager {
             )
         );
 
-        TPA4Fabric.LOGGER.debug("success tpa.");
-
         markPlayerOnCooldown(me.getUuidAsString());
 
         me.sendMessage(fromLang("tpa4fabric.sentTpaReq", me.getName().getString()));
@@ -136,7 +134,6 @@ public class TPAManager {
     public boolean isPlayerOnCooldown(String uuid) {
         if (playersOnCooldown.containsKey(uuid)) {
             long delta = Instant.now().getEpochSecond() - playersOnCooldown.get(uuid);
-            TPA4Fabric.LOGGER.debug(uuid + " : " + delta);
             if (delta <= 10)
                 return true;
             else if (delta >= 10) {
@@ -148,7 +145,6 @@ public class TPAManager {
     }
 
     private void markPlayerOnCooldown(String uuid) {
-        TPA4Fabric.LOGGER.debug(uuid + "is now in cd");
         playersOnCooldown.put(uuid, Instant.now().getEpochSecond());
     }
 
@@ -182,7 +178,7 @@ public class TPAManager {
             from.sendMessage(fromLang("tpa4fabric.teleporting"));
 
             from.setVelocity(0, 0, 0);
-            from.setInvulnerable(true);
+            from.setInvulnerable(true); // Potential vulnerability...
             from.teleport(
                 whoAccepted.getServerWorld(),
                 whoAccepted.getX(),

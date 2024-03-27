@@ -14,11 +14,14 @@ public class MCTextUtils {
     }
 
     public static Text fromLang(String key) {
-        return Text.translatable(key);
+        return textOf(fromLangAsStr(key));
+    }
+
+    public static String fromLangAsStr(String key) {
+        return Text.translatable(key).getString();
     }
 
     public static Text fromLang(String key, Object... formats) {
-        String s = Text.translatable(key).getString();
-        return textOf(s, formats);
+        return textOf(fromLangAsStr(key), formats);
     }
 }
