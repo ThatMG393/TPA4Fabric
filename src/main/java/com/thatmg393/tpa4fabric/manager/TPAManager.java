@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.fabricmc.fabric.mixin.biome.modification.MinecraftServerMixin;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -51,6 +53,7 @@ public class TPAManager {
             from.getUuidAsString(),
             new TPARequest(
                 requests,
+                from,
                 new Timer()
             )
         );
@@ -85,7 +88,7 @@ public class TPAManager {
             from.setVelocity(0, 0, 0);
             from.setInvulnerable(true);
             from.sendMessage(Text.of("teleported to " + me.getName().getString()));
-
+            
             from.teleport(
                 me.getServerWorld(),
                 me.getX(),
@@ -122,12 +125,13 @@ public class TPAManager {
         }
     }
 
-    public record TPARequest(HashMap<?, ?> container, Timer scheduler) {
+    public record TPARequest(HashMap<?, ?> container, ServerPlayerEntity from, Timer scheduler) {
         public TPARequest {
             scheduler.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     if (container != null) container.remove(this);
+                    from.sendMessage(Text.of("Your TPA request expired."));
                 }
             }, 5);
         }
