@@ -108,15 +108,12 @@ public class TPAManager {
 				me.sendMessage(Text.of("You have no TPA request from " + from.getName().getString()));
 				return null;
 			}
-		} else if (from == null) {
+		} else {
 			if (requests.size() > 1) {
 				me.sendMessage(Text.of("You have multiple TPA requests!"));
 				return null;
 			}
 			r = requests.remove(requests.keySet().toArray()[0]);
-		} else {
-			me.sendMessage(Text.of("You have no TPA request from " + from.getName().getString()));
-			return null;
 		}
 
 		r.consumed();
