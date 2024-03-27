@@ -7,11 +7,13 @@ import java.util.TimerTask;
 
 import org.slf4j.helpers.MessageFormatter;
 
+import com.thatmg393.tpa4fabric.TPA4Fabric;
+
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-import static com.thatmg393.tpa4fabric.utils.MCTextUtils.*;
+import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
 public class TPAManager {
     private static final TPAManager INSTANCE = new TPAManager();
@@ -59,6 +61,8 @@ public class TPAManager {
                 new Timer()
             )
         );
+
+        TPA4Fabric.LOGGER.debug("success tpa.");
 
         markPlayerOnCooldown(me.getUuidAsString());
 
@@ -132,6 +136,7 @@ public class TPAManager {
     public boolean isPlayerOnCooldown(String uuid) {
         if (playersOnCooldown.containsKey(uuid)) {
             long delta = Instant.now().getEpochSecond() - playersOnCooldown.get(uuid);
+            TPA4Fabric.LOGGER.debug(uuid + " : " + delta);
             if (delta <= 10)
                 return true;
             else if (delta >= 10) {
@@ -143,9 +148,8 @@ public class TPAManager {
     }
 
     private void markPlayerOnCooldown(String uuid) {
-        if (!playersOnCooldown.containsKey(uuid)) {
-            playersOnCooldown.put(uuid, Instant.now().getEpochSecond());
-        }
+        TPA4Fabric.LOGGER.debug(uuid + "is now in cd");
+        playersOnCooldown.put(uuid, Instant.now().getEpochSecond());
     }
 
     private boolean doesPlayerHaveTPARequest(String uuid) {
