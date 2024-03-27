@@ -27,15 +27,19 @@ public class TPA4Fabric implements ModInitializer {
 			dispatcher.register(
 				literal("tpa")
 				.requires(source -> source.hasPermissionLevel(1))
-				.then(argument("to", EntityArgumentType.player()))
-				.executes(ctx -> TPAManager.getInstance().newTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "to")))
+				.then(
+					argument("to", EntityArgumentType.player())
+				    .executes(ctx -> TPAManager.getInstance().newTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "to")))
+				)
 			);
 
 			dispatcher.register(
 				literal("tpaccept")
 				.requires(source -> source.hasPermissionLevel(1))
-				.then(argument("from", EntityArgumentType.player()))
+				.then(
+					argument("from", EntityArgumentType.player())
 				    .executes(ctx -> TPAManager.getInstance().acceptTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "from")))
+				)
 				.executes(ctx -> 1)
 			);
 		});
