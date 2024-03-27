@@ -10,6 +10,7 @@ import com.thatmg393.tpa4fabric.manager.TPAManager;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.argument.EntityArgumentType;
 
 public class TPA4Fabric implements ModInitializer {
@@ -18,15 +19,17 @@ public class TPA4Fabric implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Hello Fabric world!");
+		LOGGER.info("Using TPA4Fabric v" + FabricLoader.getInstance().getModContainer(MOD_ID).get().getMetadata().getVersion().getFriendlyString());
+		LOGGER.info("Registering TPA4Fabric commands...");
 		registerCommands();
+		LOGGER.info("Registered, have fun!");
 	}
 
 	private void registerCommands() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registry, env) -> {
 			dispatcher.register(
 				literal("tpa")
-				.requires(source -> source.hasPermissionLevel(1))
+				.requires(src -> src.hasPermissionLevel(1))
 				.then(
 					argument("to", EntityArgumentType.player())
 				    .executes(ctx -> TPAManager.getInstance().newTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "to")))
@@ -35,7 +38,7 @@ public class TPA4Fabric implements ModInitializer {
 
 			dispatcher.register(
 				literal("tpaccept")
-				.requires(source -> source.hasPermissionLevel(1))
+				.requires(src -> src.hasPermissionLevel(1))
 				.then(
 					argument("from", EntityArgumentType.player())
 				    .executes(ctx -> TPAManager.getInstance().acceptTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "from")))
