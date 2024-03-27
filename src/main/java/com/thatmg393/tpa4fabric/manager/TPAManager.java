@@ -71,7 +71,7 @@ public class TPAManager {
             return 1;
         } else {
 			TPARequest request = getTPARequest(me, from);
-			if (request == null) return 1:
+			if (request == null) return 1;
 
 			request.accept(me);
         }
