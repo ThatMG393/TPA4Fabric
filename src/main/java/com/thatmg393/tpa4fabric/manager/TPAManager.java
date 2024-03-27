@@ -28,12 +28,12 @@ public class TPAManager {
         var from = context.getPlayer();
         
         if (from.equals(to)) {
-            from.sendMessage(Text.literal("You cannot teleport to yourself! Are you stupid?"));
+            from.sendMessage(Text.of("You cannot teleport to yourself! Are you stupid?"));
             return 1;
         }
 
         if (isPlayerOnCooldown(from.getUuidAsString())) {
-            from.sendMessage(Text.literal("You are in cooldown! Chillax."));
+            from.sendMessage(Text.of("You are in cooldown! Chillax."));
             return 1;
         }
 
@@ -42,7 +42,7 @@ public class TPAManager {
         }
 
         if (tpaRequests.get(to.getUuidAsString()).containsKey(from.getUuidAsString())) {
-            from.sendMessage(Text.literal("You already have a teleport request to that player!"));
+            from.sendMessage(Text.of("You already have a teleport request to that player!"));
             return 1;
         }
 
@@ -65,34 +65,34 @@ public class TPAManager {
     ) {
         ServerPlayerEntity me = context.getPlayer();
         if (!tpaRequests.containsKey(me.getUuidAsString())) {
+            me.sendMessage(Text.of("You have no TPA request!"));
             return 1;
         } else {
             var requests = tpaRequests.get(me.getUuidAsString());
             if (requests.size() == 0) {
-                me.sendMessage(Text.of("You have no teleport request!"));
+                me.sendMessage(Text.of("You have no TPA request!"));
                 return 1;
             }
             
             if (from != null && !requests.containsKey(from.getUuidAsString())) {
-                me.sendMessage(Text.of("You have no teleport request from " + from.getName().getString()));
+                me.sendMessage(Text.of("You have no TPA request from " + from.getName().getString()));
                 return 1;
             }
 
             TPARequest request = null;
             if (from != null) {
-                request = requests.get(from.getUuidAsString());
+                request = requests.remove(from.getUuidAsString());
             } else {
                 if (requests.size() > 1) {
                     me.sendMessage(Text.of("You have multiple TPA reqeusts!"));
                     return 1;
                 }
-                request = requests.get(requests.keySet().toArray()[0]);
+                request = requests.remove(requests.keySet().toArray()[0]);
             }
-            requests.remove(from.getUuidAsString());
 
             from.setVelocity(0, 0, 0);
             from.setInvulnerable(true);
-            from.sendMessage(Text.of("teleported to " + me.getName().getString()));
+            from.sendMessage(Text.of("You have been teleported to " + me.getName().getString()));
             
             from.teleport(
                 me.getServerWorld(),
@@ -107,6 +107,39 @@ public class TPAManager {
             request.consumed();
 
             markPlayerOnCooldown(me.getUuidAsString());
+        }
+
+        return 0;
+    }
+
+    public int denyTPA(
+        ServerCommandSource context,
+        ServerPlayerEntity from
+    ) {
+        ServerPlayerEntity me = context.getPlayer();
+        if (!tpaRequests.containsKey(me.getUuidAsString())
+         || tpaRequests.get(me.getUuidAsString()).size() == 0
+        ) {
+            me.sendMessage(Text.of("You have no TPA request received."));
+            return 1;
+        } else {
+            var requests = tpaRequests.get(me.getUuidAsString());
+            
+            TPARequest request = null;
+            if (from != null && requests.containsKey(from.getUuidAsString())) {
+                request = requests.remove(from.getUuidAsString());
+            } else if (from == null) {
+                if (requests.size() > 1) {
+                    me.sendMessage(Text.of("You have multiple TPA requests!"));
+                    return 1;
+                }
+                request = requests.remove(requests.keySet().toArray()[0]);
+            } else {
+                me.sendMessage(Text.of("You have no TPA request from " + from.getName().getString()));
+                return 1;
+            }
+
+            request.deny(me.getName().getString());
         }
 
         return 0;
@@ -143,7 +176,17 @@ public class TPAManager {
 
         public void consumed() {
             scheduler.cancel();
-            if (container != null) container.remove(this);
+            if (container != null && container.containsValue(this)) container.remove(this);
+        }
+
+        public void accept(String name) {
+            // no-op
+            // implement later
+        }
+
+        public void deny(String name) {
+            consumed();
+            from.sendMessage(Text.of(name + " denied your TPA request."));
         }
     }
 }
