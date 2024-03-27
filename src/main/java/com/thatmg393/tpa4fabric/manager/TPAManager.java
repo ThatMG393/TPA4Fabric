@@ -66,7 +66,7 @@ public class TPAManager {
         ServerPlayerEntity from
     ) {
         ServerPlayerEntity me = context.getPlayer();
-		if (!doesPlayerHaveTPARequest(me.getUuidAsString()))
+		if (!doesPlayerHaveTPARequest(me.getUuidAsString())) {
             me.sendMessage(Text.of("You have no TPA request received."));
             return 1;
         } else {
