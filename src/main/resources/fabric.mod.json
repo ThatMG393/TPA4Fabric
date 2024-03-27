@@ -13,7 +13,7 @@
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/tpa4fabric/icon.png",
-	"environment": "*",
+	"environment": "server",
 	"entrypoints": {
 		"main": [
 			"com.thatmg393.tpa4fabric.TPA4Fabric"
@@ -25,5 +25,10 @@
 		"minecraft": "~1.20.4",
 		"java": ">=17",
 		"fabric-api": "*"
+	},
+        "custom": {
+		"mc-publish": {
+                        "modrinth": "OvUDVqpr"
+		}
 	}
 }
