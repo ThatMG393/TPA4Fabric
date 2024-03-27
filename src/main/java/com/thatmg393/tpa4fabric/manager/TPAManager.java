@@ -25,15 +25,15 @@ public class TPAManager {
         ServerCommandSource context,
         ServerPlayerEntity to
     ) {
-        var from = context.getPlayer();
+        var me = context.getPlayer();
         
-        if (from.equals(to)) {
-            from.sendMessage(Text.of("You cannot teleport to yourself! Are you stupid?"));
+        if (me.equals(to)) {
+            me.sendMessage(Text.of("You cannot teleport to yourself! Are you stupid?"));
             return 1;
         }
 
-        if (isPlayerOnCooldown(from.getUuidAsString())) {
-            from.sendMessage(Text.of("You are in cooldown! Chillax."));
+        if (isPlayerOnCooldown(me.getUuidAsString())) {
+            me.sendMessage(Text.of("You are in cooldown! Chillax."));
             return 1;
         }
 
@@ -48,13 +48,15 @@ public class TPAManager {
 
         var requests = tpaRequests.get(to.getUuidAsString());
         requests.put(
-            from.getUuidAsString(),
+            me.getUuidAsString(),
             new TPARequest(
                 requests,
-                from,
+                me,
                 new Timer()
             )
         );
+
+		markPlayerOnCooldown(me.getUuidAsString());
 
         return 0;
     }
@@ -64,49 +66,14 @@ public class TPAManager {
         ServerPlayerEntity from
     ) {
         ServerPlayerEntity me = context.getPlayer();
-        if (!tpaRequests.containsKey(me.getUuidAsString())) {
-            me.sendMessage(Text.of("You have no TPA request!"));
+		if (!doesPlayerHaveTPARequest(me.getUuidAsString()))
+            me.sendMessage(Text.of("You have no TPA request received."));
             return 1;
         } else {
-            var requests = tpaRequests.get(me.getUuidAsString());
-            if (requests.size() == 0) {
-                me.sendMessage(Text.of("You have no TPA request!"));
-                return 1;
-            }
-            
-            if (from != null && !requests.containsKey(from.getUuidAsString())) {
-                me.sendMessage(Text.of("You have no TPA request from " + from.getName().getString()));
-                return 1;
-            }
+			TPARequest request = getTPARequest(me, from);
+			if (request == null) return 1:
 
-            TPARequest request = null;
-            if (from != null) {
-                request = requests.remove(from.getUuidAsString());
-            } else {
-                if (requests.size() > 1) {
-                    me.sendMessage(Text.of("You have multiple TPA reqeusts!"));
-                    return 1;
-                }
-                request = requests.remove(requests.keySet().toArray()[0]);
-            }
-
-            from.setVelocity(0, 0, 0);
-            from.setInvulnerable(true);
-            from.sendMessage(Text.of("You have been teleported to " + me.getName().getString()));
-            
-            from.teleport(
-                me.getServerWorld(),
-                me.getX(),
-                me.getY(),
-                me.getZ(),
-                from.getYaw(),
-                from.getPitch()
-            );
-
-            from.setInvulnerable(false);
-            request.consumed();
-
-            markPlayerOnCooldown(me.getUuidAsString());
+			request.accept(me);
         }
 
         return 0;
@@ -117,33 +84,44 @@ public class TPAManager {
         ServerPlayerEntity from
     ) {
         ServerPlayerEntity me = context.getPlayer();
-        if (!tpaRequests.containsKey(me.getUuidAsString())
-         || tpaRequests.get(me.getUuidAsString()).size() == 0
-        ) {
+        if (!doesPlayerHaveTPARequest(me.getUuidAsString())) {
             me.sendMessage(Text.of("You have no TPA request received."));
             return 1;
         } else {
-            var requests = tpaRequests.get(me.getUuidAsString());
-            
-            TPARequest request = null;
-            if (from != null && requests.containsKey(from.getUuidAsString())) {
-                request = requests.remove(from.getUuidAsString());
-            } else if (from == null) {
-                if (requests.size() > 1) {
-                    me.sendMessage(Text.of("You have multiple TPA requests!"));
-                    return 1;
-                }
-                request = requests.remove(requests.keySet().toArray()[0]);
-            } else {
-                me.sendMessage(Text.of("You have no TPA request from " + from.getName().getString()));
-                return 1;
-            }
+            TPARequest request = getTPARequest(me, from);
+			if (request == null) return 1;
 
             request.deny(me.getName().getString());
         }
 
         return 0;
     }
+
+	public TPARequest getTPARequest(ServerPlayerEntity me, ServerPlayerEntity from) {
+		var requests = tpaRequests.get(me.getUuidAsString());
+        TPARequest r = null;
+
+		if (from != null) {
+			if (requests.containsKey(from.getUuidAsString())) {
+				r = requests.remove(from.getUuidAsString());
+			} else {
+				me.sendMessage(Text.of("You have no TPA request from " + from.getName().getString()));
+				return null;
+			}
+		} else if (from == null) {
+			if (requests.size() > 1) {
+				me.sendMessage(Text.of("You have multiple TPA requests!"));
+				return null;
+			}
+			r = requests.remove(requests.keySet().toArray()[0]);
+		} else {
+			me.sendMessage(Text.of("You have no TPA request from " + from.getName().getString()));
+			return null;
+		}
+
+		r.consumed();
+		return r;
+	}
 
     public boolean isPlayerOnCooldown(String uuid) {
         if (playersOnCooldown.containsKey(uuid)) {
@@ -163,6 +141,12 @@ public class TPAManager {
         }
     }
 
+	private boolean doesPlayerHaveTPARequest(String uuid) {
+		if (tpaRequests.containsKey(uuid))
+			return tpaRequests.get(uuid).size() > 1;
+		return false;
+	}
+
     public record TPARequest(HashMap<?, ?> container, ServerPlayerEntity from, Timer scheduler) {
         public TPARequest {
             scheduler.schedule(new TimerTask() {
@@ -171,22 +155,37 @@ public class TPAManager {
                     if (container != null) container.remove(this);
                     from.sendMessage(Text.of("Your TPA request expired."));
                 }
-            }, 30 * 1000);
+            }, 120 * 1000 /* 2 minutes */ );
         }
 
-        public void consumed() {
-            scheduler.cancel();
-            if (container != null && container.containsValue(this)) container.remove(this);
-        }
+        public void accept(ServerPlayerEntity whoAccepted) {
+			consumed();
 
-        public void accept(String name) {
-            // no-op
-            // implement later
+			from.sendMessage(whoAccepted.getName().getString() + " accepted your TPA request.");
+			from.sendMessage("Teleporting...");
+
+			from.setVelocity(0, 0, 0);
+			from.setInvulnerable(true);
+			from.teleport(
+				whoAccepted.getServerWorld(),
+				whoAccepted.getX(),
+	            whoAccepted.getY(),
+				whoAccepted.getZ(),
+				from.getYaw(),
+				from.getPitch()
+			);
+			from.setInvulnerable(false);
+
+			from.sendMessage("Teleported!");
         }
 
         public void deny(String name) {
             consumed();
             from.sendMessage(Text.of(name + " denied your TPA request."));
+        }
+
+		 public void consumed() {
+            scheduler.cancel();
         }
     }
 }
