@@ -1,0 +1,17 @@
+{
+    "tpa4fabric.tpa2self": "You can't teleport to yourself! Are you stupid?",
+    "tpa4fabric.cooldown": "You're in cooldown, chillax.",
+    "tpa4fabric.existingTpaReq": "You already have a pending TPA request to {}",
+    "tpa4fabric.sentTpaReq": "Successfully sent TPA request to {}",
+    "tpa4fabric.recvTpaReq": "{} sent you a TPA request.",
+    "tpa4fabric.acceptedTpaReq": "You accepted {}'s TPA request!",
+    "tpa4fabric.acceptedTpaReqMsg":"{} accepted your TPA request!",
+    "tpa4fabric.denyTpaReq": "You denied {}'s TPA request!",
+    "tpa4fabric.denyTpaReqMsg": "{} denied your TPA request!",
+    "tpa4fabric.tpaListEmpty": "You have no TPA requests.",
+    "tpa4fabric.noTpaReqFrom": "You have no TPA request from {}",
+    "tpa4fabric.multiTpaReq": "You have multiple TPA request!",
+    "tpa4fabric.tpaReqExp": "Your TPA request expired.",
+    "tpa4fabric.teleporting": "Teleporting...",
+    "tpa4fabric.successTp": "Teleported."
+}
