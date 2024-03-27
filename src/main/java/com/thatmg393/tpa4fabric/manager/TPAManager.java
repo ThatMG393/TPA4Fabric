@@ -67,20 +67,27 @@ public class TPAManager {
         if (!tpaRequests.containsKey(me.getUuidAsString())) {
             return 1;
         } else {
-            if (tpaRequests.get(me.getUuidAsString()).size() == 0) {
-                return 1;
-            }
-
             var requests = tpaRequests.get(me.getUuidAsString());
             if (requests.size() == 0) {
                 me.sendMessage(Text.of("You have no teleport request!"));
                 return 1;
-            } if (!requests.containsKey(from.getUuidAsString())) {
+            }
+            
+            if (from != null && !requests.containsKey(from.getUuidAsString())) {
                 me.sendMessage(Text.of("You have no teleport request from " + from.getName().getString()));
                 return 1;
             }
 
-            var request = requests.get(from.getUuidAsString());
+            TPARequest request = null;
+            if (from != null) {
+                request = requests.get(from.getUuidAsString());
+            } else {
+                if (requests.size() > 1) {
+                    me.sendMessage(Text.of("You have multiple TPA reqeusts!"));
+                    return 1;
+                }
+                request = requests.get(requests.keySet().toArray()[0]);
+            }
             requests.remove(from.getUuidAsString());
 
             from.setVelocity(0, 0, 0);

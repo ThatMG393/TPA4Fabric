@@ -43,7 +43,7 @@ public class TPA4Fabric implements ModInitializer {
 					argument("from", EntityArgumentType.player())
 				    .executes(ctx -> TPAManager.getInstance().acceptTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "from")))
 				)
-				.executes(ctx -> 1)
+				.executes(ctx -> TPAManager.getInstance().acceptTPA(ctx.getSource(), null))
 			);
 		});
 	}
