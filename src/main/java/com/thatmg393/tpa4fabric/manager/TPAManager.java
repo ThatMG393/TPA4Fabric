@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import net.fabricmc.fabric.mixin.biome.modification.MinecraftServerMixin;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -133,7 +131,7 @@ public class TPAManager {
                     if (container != null) container.remove(this);
                     from.sendMessage(Text.of("Your TPA request expired."));
                 }
-            }, 5);
+            }, 30 * 1000);
         }
 
         public void consumed() {
