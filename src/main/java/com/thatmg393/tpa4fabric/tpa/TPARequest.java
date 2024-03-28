@@ -49,7 +49,7 @@ public record TPARequest(HashMap<?, ?> container, ServerPlayerEntity from, Timer
                 TeleportUtils.teleport(from, whoAccepted);
                 from.sendMessage(fromLang("tpa4fabric.successTp"));
             }
-        }, ModConfigManager.loadOrGetConfig().tpaTeleportTime).start();
+        }, ModConfigManager.loadOrGetConfig().tpaTeleportTime * 1000).start();
     }
 
     public void deny(ServerPlayerEntity whoDenied) {
