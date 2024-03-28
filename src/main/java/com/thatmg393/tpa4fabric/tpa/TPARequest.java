@@ -21,7 +21,7 @@ public record TPARequest(HashMap<?, ?> container, ServerPlayerEntity from, Timer
                     container.remove(this);
                 from.sendMessage(fromLang("tpa4fabric.tpaReqExp"));
             }
-        }, ModConfigManager.loadOrGetConfig().tpaExpireTime);
+        }, ModConfigManager.loadOrGetConfig().tpaExpireTime * 1000);
     }
 
     public void accept(ServerPlayerEntity whoAccepted) {

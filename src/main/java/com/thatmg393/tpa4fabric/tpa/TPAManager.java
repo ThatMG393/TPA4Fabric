@@ -62,9 +62,9 @@ public class TPAManager {
 
         markPlayerOnCooldown(me.getUuidAsString());
 
-        me.sendMessage(fromLang("tpa4fabric.sentTpaReq", me.getName().getString()));
+        me.sendMessage(fromLang("tpa4fabric.sentTpaReq", to.getName().getString()));
         to.sendMessage(fromLang("tpa4fabric.recvTpaReq", me.getName().getString()));
-
+        
         return 0;
     }
 
