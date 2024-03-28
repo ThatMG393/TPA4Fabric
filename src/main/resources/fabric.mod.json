@@ -15,7 +15,7 @@
 	"icon": "assets/tpa4fabric/icon.png",
 	"environment": "server",
 	"entrypoints": {
-		"main": [
+		"server": [
 			"com.thatmg393.tpa4fabric.TPA4Fabric"
 		]
 	},
