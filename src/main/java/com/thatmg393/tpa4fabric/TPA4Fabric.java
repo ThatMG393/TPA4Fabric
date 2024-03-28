@@ -32,6 +32,8 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 		LOGGER.info("Registering TPA4Fabric commands...");
 		registerCommands();
 		LOGGER.info("Registered, have fun!");
+
+		TPAManager.getInstance(); // Triggers the auto class init
 	}
 
 	private void registerCommands() {
@@ -65,7 +67,6 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 				.executes(ctx -> TPAManager.getInstance().denyTPA(ctx.getSource(), null))
 			);
 
-			/* Still thinking how would I index the ConfigData
 			dispatcher.register(
 				literal("tpaconfig")
 				.requires(src -> src.isExecutedByPlayer())
@@ -77,7 +78,6 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 					)
 				)
 			);
-			*/
 		});
 	}
 }

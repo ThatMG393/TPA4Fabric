@@ -30,7 +30,7 @@ public record TPARequest(HashMap<?, ?> container, ServerPlayerEntity from, Timer
         from.sendMessage(fromLang("tpa4fabric.acceptedTpaReqMsg", whoAccepted.getName().getString()));
         from.sendMessage(fromLang("tpa4fabric.teleporting"));
         
-        int x = (int) from.getX(), z = (int) from.getZ();
+        final int x = (int) from.getX(), z = (int) from.getZ();
 
         new CountdownTimer(new CountdownTimer.TimerCallback() {
             @Override
