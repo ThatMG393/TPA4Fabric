@@ -12,7 +12,8 @@ A simple TPA mod for Fabric.
 > { } is required and [ ] is optional (or in specific cases)
 
 # To-do list 
-- Add '/tpacancel' & '/tpaallow'
-- Better TPARequest and Player On-CD storage
-- The 5 second before TP timer
-- Runtime Configs!
+- [ ] Add '/tpacancel' & '/tpaallow'
+- [ ] Better TPARequest and Player On-CD storage
+- [x] The 5 second before TP timer
+- [ ] Runtime configs.
+- [ ] Formatted messages.

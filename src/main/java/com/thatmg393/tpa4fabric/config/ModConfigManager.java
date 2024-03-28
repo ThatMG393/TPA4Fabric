@@ -1,9 +1,9 @@
-package com.thatmg393.usefulhuds.config;
+package com.thatmg393.tpa4fabric.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.thatmg393.usefulhuds.UsefulHUDs;
-import com.thatmg393.usefulhuds.config.data.ModConfigData;
+import com.thatmg393.tpa4fabric.TPA4Fabric;
+import com.thatmg393.tpa4fabric.config.data.ModConfigData;
 
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -19,7 +19,7 @@ public class ModConfigManager {
     private static final Gson GSON = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
     public static final File CONFIG_PATH = new File(Paths.get(
             FabricLoader.getInstance().getConfigDir().toString(),
-            UsefulHUDs.MOD_ID + ".json"
+            TPA4Fabric.MOD_ID + ".json"
         ).toString()
     );
 
@@ -27,9 +27,8 @@ public class ModConfigManager {
     private static ModConfigData loadedConfig;
 
     public static ModConfigData loadOrGetConfig() {
-        if (loadedConfig != null) {
+        if (loadedConfig != null)
             return loadedConfig;
-        }
 
         try {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(CONFIG_PATH));
@@ -37,9 +36,9 @@ public class ModConfigManager {
 
             loadedConfig = parsedConfig;
         } catch (FileNotFoundException e) {
-            UsefulHUDs.LOGGER.error("An exception occurred! " + e.toString());
+            TPA4Fabric.LOGGER.error("An exception occurred! " + e.toString());
 
-            UsefulHUDs.LOGGER.info("Using default config instead...");
+            TPA4Fabric.LOGGER.info("Using default config instead...");
             loadedConfig = new ModConfigData();
             saveConfig();
         }
@@ -56,7 +55,7 @@ public class ModConfigManager {
             String serializedJson = GSON.toJson(loadedConfig);
             fileWriter.write(serializedJson);
         } catch (IOException e) {
-            UsefulHUDs.LOGGER.error(e.toString());
+            TPA4Fabric.LOGGER.error(e.toString());
         }
     }
 }

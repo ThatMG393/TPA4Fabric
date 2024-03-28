@@ -1,19 +1,16 @@
-package com.thatmg393.tpa4fabric.manager;
+package com.thatmg393.tpa4fabric.tpa;
+
+import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import org.slf4j.helpers.MessageFormatter;
-
-import com.thatmg393.tpa4fabric.TPA4Fabric;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-
-import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
 public class TPAManager {
     private static final TPAManager INSTANCE = new TPAManager();
@@ -24,9 +21,10 @@ public class TPAManager {
 
     private TPAManager() { }
 
+    // TODO: Combine these two HashMaps to reduce memory usage (2 hashmap = x2 memory usage)
     private HashMap<String, Long> playersOnCooldown = new HashMap<>();
     private HashMap<String, HashMap<String, TPARequest>> tpaRequests = new HashMap<>();
-
+    
     public int newTPA(
         ServerCommandSource context,
         ServerPlayerEntity to
@@ -157,50 +155,5 @@ public class TPAManager {
     public static Text buildText(String id, Object... format) {
         String m = Text.translatable(id).getString();
         return Text.of(MessageFormatter.format(m, format).getMessage());
-    }
-
-    public record TPARequest(HashMap<?, ?> container, ServerPlayerEntity from, Timer scheduler) {
-        public TPARequest {
-            scheduler.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if (container != null)
-                        container.remove(this);
-                    from.sendMessage(fromLang("tpa4fabric.tpaReqExp"));
-                }
-            }, 120 * 1000 /* 2 minutes */ );
-        }
-
-        public void accept(ServerPlayerEntity whoAccepted) {
-            consumed();
-
-            from.sendMessage(fromLang("tpa4fabric.acceptedTpaReqMsg", whoAccepted.getName().getString()));
-            from.sendMessage(fromLang("tpa4fabric.teleporting"));
-
-            from.setVelocity(0, 0, 0);
-            from.setInvulnerable(true); // Potential vulnerability...
-            from.teleport(
-                whoAccepted.getServerWorld(),
-                whoAccepted.getX(),
-                whoAccepted.getY(),
-                whoAccepted.getZ(),
-                from.getYaw(),
-                from.getPitch()
-            );
-            from.setInvulnerable(false);
-
-            from.sendMessage(fromLang("tpa4fabric.successTp"));
-        }
-
-        public void deny(ServerPlayerEntity whoDenied) {
-            consumed();
-
-            whoDenied.sendMessage(fromLang("tpa4fabric.denyTpaReq", from.getName().getString()));
-            from.sendMessage(fromLang("tpa4fabric.denyTpaReqMsg", whoDenied.getName().getString()));
-        }
-
-        public void consumed() {
-            scheduler.cancel();
-        }
     }
 }
