@@ -79,7 +79,7 @@ public class TPAManager {
         ServerPlayerEntity me = context.getPlayer();
         Player target = players.get(me.getUuidAsString());
 
-        if (!target.isTPARequestsEmpty()) {
+        if (target.isTPARequestsEmpty()) {
             me.sendMessage(fromLang("tpa4fabric.tpaListEmpty"));
             return 1;
         } else {
@@ -100,7 +100,7 @@ public class TPAManager {
         ServerPlayerEntity me = context.getPlayer();
         Player target = players.get(me.getUuidAsString());
 
-        if (!target.isTPARequestsEmpty()) {
+        if (target.isTPARequestsEmpty()) {
             me.sendMessage(fromLang("tpa4fabric.tpaListEmpty"));
             return 1;
         } else {
