@@ -2,22 +2,11 @@ package com.thatmg393.tpa4fabric.tpa;
 
 import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
-import java.time.Instant;
 import java.util.HashMap;
-import java.util.Timer;
 
-import org.slf4j.helpers.MessageFormatter;
-
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.Join;
-import net.fabricmc.fabric.impl.container.ServerPlayerEntitySyncHook;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 
 public class TPAManager {
     private static final TPAManager INSTANCE = new TPAManager();
@@ -62,10 +51,15 @@ public class TPAManager {
             return 1;
         }
 
+        if (players.get(me.getUuidAsString()).inCooldown()) {
+            me.sendMessage(fromLang("tpa4fabric.cooldown"));
+            return 1;
+        }
+
         Player target = players.get(to.getUuidAsString());
 
-        if (target.inCooldown()) {
-            me.sendMessage(fromLang("tpa4fabric.cooldown"));
+        if (!target.getAllowedTPARequest()) {
+            me.sendMessage(fromLang("tpa4fabric.playerTpaOff", target.getRealPlayer().getName().getString()));
             return 1;
         }
 
@@ -118,5 +112,16 @@ public class TPAManager {
         }
 
         return 0;
+    }
+
+    public int allowTPA(
+        ServerCommandSource context,
+        boolean allow
+    ) {
+        Player me = players.get(context.getPlayer().getUuidAsString());
+        me.setAllowedTPARequest(allow);
+        me.sendChatMessage(fromLang("tpa4fabric.changeTpaAllowMsg", allow));
+        
+        return 1;
     }
 }

@@ -16,12 +16,15 @@ public class Player {
     private HashMap<String, TPARequest> tpaRequests = new HashMap<>();
     private long cmdInvokeTime = 0;
 
+    private boolean allowedTpaRequest;
+
     public Player(ServerPlayerEntity me) {
         this.me = me;
         this.myUuid = me.getUuidAsString();
     }
 
     public boolean newTPARequest(ServerPlayerEntity from) {
+        if (!this.allowedTpaRequest) return false;
         if (tpaRequests.containsKey(from.getUuidAsString())) return false;
 
         tpaRequests.put(
@@ -75,6 +78,14 @@ public class Player {
 
         this.cmdInvokeTime = 0;
         return false;
+    }
+
+    public void setAllowedTPARequest(boolean newValue) {
+        this.allowedTpaRequest = newValue;
+    }
+
+    public boolean getAllowedTPARequest() {
+        return this.allowedTpaRequest;
     }
 
     public String getUUID() {

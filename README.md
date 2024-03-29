@@ -6,13 +6,13 @@ A simple TPA mod for Fabric.
 - [x] tpaaccept [from]
 - [x] tpadeny [from]
 - [ ] tpacancel [to]
-- [ ] tpaallow {true|false}
+- [x] tpaallow {true|false}
 - [ ] tpaconfig {key} {value}
 
 > { } is required and [ ] is optional (or in specific cases)
 
 # To-do list 
-- [ ] Add '/tpacancel' & '/tpaallow'
+- [-] Add '/tpacancel' & '/tpaallow'
 - [ ] Better TPARequest and Player On-CD storage
 - [x] The 5 second before TP timer
 - [ ] Runtime configs.

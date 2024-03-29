@@ -6,9 +6,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.thatmg393.tpa4fabric.config.ModConfigManager;
 import com.thatmg393.tpa4fabric.tpa.TPAManager;
 
@@ -49,7 +47,7 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 
 			dispatcher.register(
 				literal("tpaaccept")
-				.requires(src -> src.isExecutedByPlayer())
+				.requires(ServerCommandSource::isExecutedByPlayer)
 				.then(
 					argument("from", EntityArgumentType.player())
 				    .executes(ctx -> TPAManager.getInstance().acceptTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "from")))
@@ -59,7 +57,7 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 
 			dispatcher.register(
 				literal("tpadeny")
-				.requires(src -> src.isExecutedByPlayer())
+				.requires(ServerCommandSource::isExecutedByPlayer)
 				.then(
 					argument("from", EntityArgumentType.player())
 					.executes(ctx -> TPAManager.getInstance().denyTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "from")))
@@ -68,8 +66,18 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 			);
 
 			dispatcher.register(
+				literal("tpaallow")
+				.requires(ServerCommandSource::isExecutedByPlayer)
+				.then(
+					argument("allow", BoolArgumentType.bool())
+					.executes(ctx -> TPAManager.getInstance().allowTPA(ctx.getSource(), BoolArgumentType.getBool(ctx, "allow")))
+				)
+			);
+
+			/*
+			dispatcher.register(
 				literal("tpaconfig")
-				.requires(src -> src.isExecutedByPlayer())
+				.requires(src -> src.hasPermissionLevel(4))
 				.then(
 					argument("key", StringArgumentType.string())
 					.then(
@@ -78,6 +86,7 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 					)
 				)
 			);
+			*/
 		});
 	}
 }

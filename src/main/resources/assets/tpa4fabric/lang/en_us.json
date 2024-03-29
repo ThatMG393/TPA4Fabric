@@ -11,6 +11,8 @@
     "tpa4fabric.tpaListEmpty": "You have no TPA requests.",
     "tpa4fabric.noTpaReqFrom": "You have no TPA request from {}",
     "tpa4fabric.multiTpaReq": "You have multiple TPA requests!",
+    "tpa4fabric.playerTpaOff": "{} turned off his/her TPA.",
+    "tpa4fabric.changeTpaAllowMsg": "You changed your TPA allow to {}",
     "tpa4fabric.tpaReqExp": "Your TPA request expired.",
     "tpa4fabric.teleporting": "Teleporting...",
     "tpa4fabric.successTp": "Teleported.",
