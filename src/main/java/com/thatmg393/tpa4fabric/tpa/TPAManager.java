@@ -122,6 +122,19 @@ public class TPAManager {
         me.setAllowedTPARequest(allow);
         me.sendChatMessage(fromLang("tpa4fabric.changeTpaAllowMsg", allow));
         
-        return 1;
+        return 0;
+    }
+
+    public int cancelTPA(
+        ServerCommandSource context,
+        ServerPlayerEntity to
+    ) {
+        Player to2 = players.get(to.getUuidAsString());
+        TPARequest r = to2.cancelTPARequest(context.getPlayer().getUuidAsString());
+        if (r != null) r.consumed();
+
+        context.getPlayer().sendMessage(fromLang("tpa4fabric.tpaCancel", to.getName().getString()));
+
+        return 0;
     }
 }

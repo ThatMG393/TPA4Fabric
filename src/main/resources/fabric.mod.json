@@ -26,9 +26,9 @@
 		"java": ">=17",
 		"fabric-api": "*"
 	},
-        "custom": {
+    "custom": {
 		"mc-publish": {
-                        "modrinth": "OvUDVqpr"
+            "modrinth": "OvUDVqpr"
 		}
 	}
 }

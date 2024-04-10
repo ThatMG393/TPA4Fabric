@@ -16,5 +16,6 @@
     "tpa4fabric.tpaReqExp": "Your TPA request expired.",
     "tpa4fabric.teleporting": "Teleporting...",
     "tpa4fabric.successTp": "Teleported.",
-    "tpa4fabric.tpaMoved": "You moved! Cancelling teleport."
+    "tpa4fabric.tpaMoved": "You moved! Cancelling teleport.",
+    "tpa4fabric.tpaCancel": "You canceled your TPA request to {}"
 }

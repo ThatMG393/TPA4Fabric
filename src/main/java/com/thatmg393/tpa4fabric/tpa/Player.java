@@ -57,6 +57,10 @@ public class Player {
         return r;
     }
 
+    public TPARequest cancelTPARequest(String playerUuid) {
+        return tpaRequests.remove(playerUuid);
+    }
+
     public boolean isTPARequestsEmpty() {
         return tpaRequests.isEmpty();
     }
