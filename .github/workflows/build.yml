@@ -52,6 +52,7 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
           tag: ${{ github.ref_name }}
           includeInvalidCommits: true
+          excludeTypes: ''
 
       - name: Upload to Modrinth
         if: ${{ matrix.java == '21' && startsWith(steps.build_bin.outputs.binver, 'v') }}
