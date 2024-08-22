@@ -50,7 +50,8 @@ jobs:
         uses: requarks/changelog-action@v1
         with:
           token: ${{ secrets.GH_TOKEN }}
-          tag: ${{ steps.build_bin.outputs.binver }}
+          tag: ${{ github.ref_name }}
+          # tag: ${{ steps.build_bin.outputs.binver }}
 
       - name: Upload to Modrinth
         if: ${{ matrix.java == '21' && startsWith(steps.build_bin.outputs.binver, 'v') }}
