@@ -12,13 +12,13 @@ import com.thatmg393.tpa4fabric.utils.TeleportUtils;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public record TPARequest(HashMap<?, ?> container, ServerPlayerEntity from, Timer scheduler) {
+public record TPARequest(HashMap<String, TPARequest> container, ServerPlayerEntity from, Timer scheduler) {
     public TPARequest {
         scheduler.schedule(new TimerTask() {
             @Override
             public void run() {
                 if (container != null)
-                    container.remove(this);
+                    container.remove(TPAManager.this);
                 from.sendMessage(fromLang("tpa4fabric.tpaReqExp"));
             }
         }, ModConfigManager.loadOrGetConfig().tpaExpireTime * 1000);
