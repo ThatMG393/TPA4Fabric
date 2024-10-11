@@ -18,7 +18,7 @@ public record TPARequest(HashMap<String, TPARequest> container, ServerPlayerEnti
             @Override
             public void run() {
                 if (container != null)
-                    container.remove(TPAManager.this);
+                    container.remove(TPARequest.this);
                 from.sendMessage(fromLang("tpa4fabric.tpaReqExp"));
             }
         }, ModConfigManager.loadOrGetConfig().tpaExpireTime * 1000);
