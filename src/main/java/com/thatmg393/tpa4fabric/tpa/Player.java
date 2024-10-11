@@ -16,7 +16,7 @@ public class Player {
     private HashMap<String, TPARequest> tpaRequests = new HashMap<>();
     private long cmdInvokeTime = 0;
 
-    private boolean allowedTpaRequest;
+    private boolean allowedTpaRequest = true;
 
     public Player(ServerPlayerEntity me) {
         this.me = me;
