@@ -4,31 +4,33 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.Timer;
 
+import com.thatmg393.tpa4fabric.config.ModConfigManager;
+
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
-public class Player {
-    private ServerPlayerEntity me;
-    private String myUuid;
+public class TPAPlayer {
+    private final ServerPlayerEntity realPlayer;
+    private final String myUuid;
+    private boolean allowTPARequests;
 
     private HashMap<String, TPARequest> tpaRequests = new HashMap<>();
     private long cmdInvokeTime = 0;
 
-    private boolean allowedTpaRequest = true;
-
-    public Player(ServerPlayerEntity me) {
-        this.me = me;
+    public TPAPlayer(ServerPlayerEntity me) {
+        this.realPlayer = me;
         this.myUuid = me.getUuidAsString();
+        this.allowTPARequests = ModConfigManager.getDefaultConfig().defaultAllowTPARequests;
     }
 
-    public boolean newTPARequest(ServerPlayerEntity from) {
-        if (!this.allowedTpaRequest) return false;
-        if (tpaRequests.containsKey(from.getUuidAsString())) return false;
+    public boolean newTPARequest(TPAPlayer from) {
+        if (!this.allowTPARequests) return false;
+        if (tpaRequests.containsKey(from.getPlayerUUID())) return false;
 
         tpaRequests.put(
-            from.getUuidAsString(),
+            from.getPlayerUUID(),
             new TPARequest(
                 tpaRequests, from, new Timer()
             )
@@ -37,14 +39,14 @@ public class Player {
         return true;
     }
 
-    public TPARequest getTPARequest(ServerPlayerEntity from) {
+    public TPARequest getTPARequest(TPAPlayer from) {
         TPARequest r = null;
 
         if (isTPARequestsEmpty()) return r;
 
         if (from != null) {
-            r = tpaRequests.get(from.getUuidAsString());
-            if (r == null) sendChatMessage(fromLang("tpa4fabric.noTpaReqFrom", from.getName().getString()));
+            r = tpaRequests.get(from.getPlayerUUID());
+            if (r == null) sendChatMessage(fromLang("tpa4fabric.noTpaReqFrom", from.getServerPlayerEntity().getName().getString()));
             return r;
         }
 
@@ -61,12 +63,8 @@ public class Player {
         return tpaRequests.remove(playerUuid);
     }
 
-    public boolean isTPARequestsEmpty() {
-        return tpaRequests.isEmpty();
-    }
-
     public void sendChatMessage(Text message) {
-        me.sendMessage(message);
+        realPlayer.sendMessage(message);
     }
 
     public void markInCooldown() {
@@ -74,7 +72,19 @@ public class Player {
         cmdInvokeTime = Instant.now().getEpochSecond();
     }
 
-    public boolean inCooldown() {
+    public void setAllowTPARequests(boolean allowTPARequests) {
+        this.allowTPARequests = allowTPARequests;
+    }
+
+    public String getPlayerUUID() {
+        return this.myUuid;
+    }
+
+    public ServerPlayerEntity getServerPlayerEntity() {
+        return this.realPlayer;
+    }
+
+    public boolean isOnCooldown() {
         if (cmdInvokeTime == 0) return false;
         
         long diff = Instant.now().getEpochSecond() - cmdInvokeTime;
@@ -84,19 +94,12 @@ public class Player {
         return false;
     }
 
-    public void setAllowedTPARequest(boolean newValue) {
-        this.allowedTpaRequest = newValue;
+    public boolean allowsTPARequests() {
+        return allowTPARequests;
     }
 
-    public boolean getAllowedTPARequest() {
-        return this.allowedTpaRequest;
-    }
 
-    public String getUUID() {
-        return this.myUuid;
-    }
-
-    public ServerPlayerEntity getRealPlayer() {
-        return this.me;
+    public boolean isTPARequestsEmpty() {
+        return tpaRequests.isEmpty();
     }
 }

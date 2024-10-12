@@ -21,7 +21,7 @@ public class TPAManager {
             if (!players.containsKey(whoJoined.getUuidAsString())) {
                 players.put(
                     whoJoined.getUuidAsString(),
-                    new Player(whoJoined)
+                    new TPAPlayer(whoJoined)
                 );
             }
         });
@@ -34,16 +34,16 @@ public class TPAManager {
         });
     }
 
-    private HashMap<String, Player> players = new HashMap<>();
+    private HashMap<String, TPAPlayer> players = new HashMap<>();
 
     public int newTPA(
         ServerCommandSource context,
         ServerPlayerEntity to
     ) {
-        var me = context.getPlayer();
+        TPAPlayer me = players.get(context.getPlayer().getUuidAsString());
 
-        if (me.equals(to)) {
-            me.sendMessage(fromLang("tpa4fabric.tpa2self"));
+        if (me.getServerPlayerEntity().equals(to)) {
+            me.sendChatMessage(fromLang("tpa4fabric.tpa2self"));
             return 1;
         }
 
@@ -51,23 +51,23 @@ public class TPAManager {
             return 1;
         }
 
-        if (players.get(me.getUuidAsString()).inCooldown()) {
-            me.sendMessage(fromLang("tpa4fabric.cooldown"));
+        if (me.isOnCooldown()) {
+            me.sendChatMessage(fromLang("tpa4fabric.cooldown"));
             return 1;
         }
 
-        Player target = players.get(to.getUuidAsString());
+        TPAPlayer target = players.get(to.getUuidAsString());
 
-        if (!target.getAllowedTPARequest()) {
-            me.sendMessage(fromLang("tpa4fabric.playerTpaOff", target.getRealPlayer().getName().getString()));
+        if (!target.allowsTPARequests()) {
+            me.sendChatMessage(fromLang("tpa4fabric.playerTpaOff", target.getServerPlayerEntity().getName().getString()));
             return 1;
         }
 
         target.newTPARequest(me);
         target.markInCooldown();
 
-        me.sendMessage(fromLang("tpa4fabric.sentTpaReq", to.getName().getString()));
-        target.sendChatMessage(fromLang("tpa4fabric.recvTpaReq", me.getName().getString()));
+        me.sendChatMessage(fromLang("tpa4fabric.sentTpaReq", to.getName().getString()));
+        target.sendChatMessage(fromLang("tpa4fabric.recvTpaReq", me.getServerPlayerEntity().getName().getString()));
         
         return 0;
     }
@@ -76,14 +76,13 @@ public class TPAManager {
         ServerCommandSource context,
         ServerPlayerEntity from
     ) {
-        ServerPlayerEntity me = context.getPlayer();
-        Player target = players.get(me.getUuidAsString());
+        TPAPlayer me = players.get(context.getPlayer().getUuidAsString());
 
-        if (target.isTPARequestsEmpty()) {
-            me.sendMessage(fromLang("tpa4fabric.tpaListEmpty"));
+        if (me.isTPARequestsEmpty()) {
+            me.sendChatMessage(fromLang("tpa4fabric.tpaListEmpty"));
             return 1;
         } else {
-            TPARequest request = target.getTPARequest(from);
+            TPARequest request = me.getTPARequest(players.get(from.getUuidAsString()));
             if (request == null)
                 return 1;
 
@@ -97,14 +96,13 @@ public class TPAManager {
         ServerCommandSource context,
         ServerPlayerEntity from
     ) {
-        ServerPlayerEntity me = context.getPlayer();
-        Player target = players.get(me.getUuidAsString());
+        TPAPlayer me = players.get(context.getPlayer().getUuidAsString());
 
-        if (target.isTPARequestsEmpty()) {
-            me.sendMessage(fromLang("tpa4fabric.tpaListEmpty"));
+        if (me.isTPARequestsEmpty()) {
+            me.sendChatMessage(fromLang("tpa4fabric.tpaListEmpty"));
             return 1;
         } else {
-            TPARequest request = target.getTPARequest(from);
+            TPARequest request = me.getTPARequest(players.get(from.getUuidAsString()));
             if (request == null)
                 return 1;
 
@@ -118,8 +116,8 @@ public class TPAManager {
         ServerCommandSource context,
         boolean allow
     ) {
-        Player me = players.get(context.getPlayer().getUuidAsString());
-        me.setAllowedTPARequest(allow);
+        TPAPlayer me = players.get(context.getPlayer().getUuidAsString());
+        me.setAllowTPARequests(allow);
         me.sendChatMessage(fromLang("tpa4fabric.changeTpaAllowMsg", allow));
         
         return 0;
@@ -129,7 +127,7 @@ public class TPAManager {
         ServerCommandSource context,
         ServerPlayerEntity to
     ) {
-        Player to2 = players.get(to.getUuidAsString());
+        TPAPlayer to2 = players.get(to.getUuidAsString());
         TPARequest r = to2.cancelTPARequest(context.getPlayer().getUuidAsString());
         if (r != null) r.consumed();
 
