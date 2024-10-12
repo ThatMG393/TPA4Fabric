@@ -10,8 +10,6 @@ import com.thatmg393.tpa4fabric.config.ModConfigManager;
 import com.thatmg393.tpa4fabric.utils.CountdownTimer;
 import com.thatmg393.tpa4fabric.utils.TeleportUtils;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-
 public record TPARequest(HashMap<String, TPARequest> container, TPAPlayer from, Timer scheduler) {
     public TPARequest {
         scheduler.schedule(new TimerTask() {
