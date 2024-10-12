@@ -22,7 +22,7 @@ public class TPAPlayer {
     public TPAPlayer(ServerPlayerEntity me) {
         this.realPlayer = me;
         this.myUuid = me.getUuidAsString();
-        this.allowTPARequests = ModConfigManager.getDefaultConfig().defaultAllowTPARequests;
+        this.allowTPARequests = ModConfigManager.loadOrGetConfig().defaultAllowTPARequests;
     }
 
     public boolean newTPARequest(TPAPlayer from) {
