@@ -62,8 +62,8 @@ public class TPAManager {
         target.newTPARequest(me);
         target.markInCooldown();
 
-        me.sendChatMessage(fromLang("tpa4fabric.sentTpaReq", to.getNameForScoreboard());
-        target.sendChatMessage(fromLang("tpa4fabric.recvTpaReq", me.getServerPlayerEntity().getNameForScoreboard());
+        me.sendChatMessage(fromLang("tpa4fabric.sentTpaReq", to.getNameForScoreboard()));
+        target.sendChatMessage(fromLang("tpa4fabric.recvTpaReq", me.getServerPlayerEntity().getNameForScoreboard()));
         
         return 0;
     }
