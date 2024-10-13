@@ -78,7 +78,10 @@ public class TPAManager {
             me.sendChatMessage(fromLang("tpa4fabric.tpaListEmpty"));
             return 1;
         } else {
-            TPARequest request = me.getTPARequest(players.get(from.getUuidAsString()));
+            TPARequest request;
+            if (from == null) request = me.getTPARequest(null);
+            else request = me.getTPARequest(players.get(from.getUuidAsString()));
+            
             if (request == null)
                 return 1;
 
@@ -98,7 +101,10 @@ public class TPAManager {
             me.sendChatMessage(fromLang("tpa4fabric.tpaListEmpty"));
             return 1;
         } else {
-            TPARequest request = me.getTPARequest(players.get(from.getUuidAsString()));
+            TPARequest request;
+            if (from == null) request = me.getTPARequest(null);
+            else request = me.getTPARequest(players.get(from.getUuidAsString()));
+            
             if (request == null)
                 return 1;
 
