@@ -4,9 +4,6 @@ import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
 import java.util.HashMap;
 
-import org.geysermc.geyser.api.GeyserApi;
-import org.geysermc.geyser.api.connection.GeyserConnection;
-
 import com.thatmg393.tpa4fabric.TPA4Fabric;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -23,21 +20,18 @@ public class TPAManager {
 
     private TPAManager() {
         ServerPlayConnectionEvents.JOIN.register((netHandler, packetSender, server) -> {
-            ServerPlayerEntity whoJoined = netHandler.getPlayer();
-            TPA4Fabric.LOGGER.info(whoJoined.getNameForScoreboard() + " joined the server, registering in the TPA...");
-            if (!players.containsKey(whoJoined.getUuidAsString())) {
-                players.put(
-                    whoJoined.getUuidAsString(),
-                    new TPAPlayer(whoJoined)
-                );
-            }
+            ServerPlayerEntity playerWhoJoined = netHandler.getPlayer();
+            TPA4Fabric.LOGGER.info(playerWhoJoined.getNameForScoreboard() + " joined the server, registering in the TPA...");
+            
+            players.putIfAbsent(
+                playerWhoJoined.getUuidAsString(),
+                new TPAPlayer(playerWhoJoined)
+            );
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((netHandler, server) -> {
-            ServerPlayerEntity whoLeft = netHandler.getPlayer();
-            if (players.containsKey(whoLeft.getUuidAsString())) {
-                players.remove(whoLeft.getUuidAsString());
-            }
+            ServerPlayerEntity playerWhoLeft = netHandler.getPlayer();
+            players.remove(playerWhoLeft.getUuidAsString());
         });
     }
 
@@ -59,23 +53,17 @@ public class TPAManager {
             return 1;
         }
 
-        TPAPlayer target = getTPAPlayer(to);
-
-        if (target == null) {
-            TPA4Fabric.LOGGER.warn(to.getUuidAsString() + " is not a player.");
-            return 1;
-        }
-
+        TPAPlayer target = players.get(to.getUuidAsString());
         if (!target.allowsTPARequests()) {
-            me.sendChatMessage(fromLang("tpa4fabric.playerTpaOff", target.getServerPlayerEntity().getName().getString()));
+            me.sendChatMessage(fromLang("tpa4fabric.playerTpaOff", target.getServerPlayerEntity().getNameForScoreboard()));
             return 1;
         }
 
         target.newTPARequest(me);
         target.markInCooldown();
 
-        me.sendChatMessage(fromLang("tpa4fabric.sentTpaReq", to.getName().getString()));
-        target.sendChatMessage(fromLang("tpa4fabric.recvTpaReq", me.getServerPlayerEntity().getName().getString()));
+        me.sendChatMessage(fromLang("tpa4fabric.sentTpaReq", to.getNameForScoreboard());
+        target.sendChatMessage(fromLang("tpa4fabric.recvTpaReq", me.getServerPlayerEntity().getNameForScoreboard());
         
         return 0;
     }
@@ -90,7 +78,7 @@ public class TPAManager {
             me.sendChatMessage(fromLang("tpa4fabric.tpaListEmpty"));
             return 1;
         } else {
-            TPARequest request = me.getTPARequest(getTPAPlayer(from));
+            TPARequest request = me.getTPARequest(players.get(from.getUuidAsString()));
             if (request == null)
                 return 1;
 
@@ -110,7 +98,7 @@ public class TPAManager {
             me.sendChatMessage(fromLang("tpa4fabric.tpaListEmpty"));
             return 1;
         } else {
-            TPARequest request = me.getTPARequest(getTPAPlayer(from));
+            TPARequest request = me.getTPARequest(players.get(from.getUuidAsString()));
             if (request == null)
                 return 1;
 
@@ -135,28 +123,14 @@ public class TPAManager {
         ServerCommandSource context,
         ServerPlayerEntity to
     ) {
-        TPAPlayer me = getTPAPlayer(context.getPlayer());
-        TPAPlayer to2 = getTPAPlayer(to);
+        TPAPlayer me = players.get(context.getPlayer().getUuidAsString());
+        TPAPlayer to2 = players.get(to.getUuidAsString());
         TPARequest r = to2.cancelTPARequest(me.getPlayerUUID());
         if (r != null) {
             r.consumed(me);
             me.sendChatMessage(fromLang("tpa4fabric.tpaCancel", to.getNameForScoreboard()));
         } else me.sendChatMessage(fromLang("tpa4fabric.noSuchTpaReqExists", to.getNameForScoreboard()));
-
+        
         return 0;
-    }
-
-    // Geyser compat
-    public TPAPlayer getTPAPlayer(ServerPlayerEntity player) {
-        if (player == null) return null;
-        if (!players.containsKey(player.getUuidAsString())) {
-            if (FabricLoader.getInstance().isModLoaded("geyser-fabric")) {
-                GeyserConnection bedrockPlayer = GeyserApi.api().connectionByUuid(player.getUuid());
-                if (bedrockPlayer != null)
-                    return players.put(player.getUuidAsString(), new TPAPlayer(player));
-            }
-            return null;
-        }
-        return players.get(player.getUuidAsString());
     }
 }
