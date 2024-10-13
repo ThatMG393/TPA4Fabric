@@ -135,16 +135,18 @@ public class TPAManager {
         ServerCommandSource context,
         ServerPlayerEntity to
     ) {
+        TPAPlayer me = getTPAPlayer(context.getPlayer());
         TPAPlayer to2 = getTPAPlayer(to);
-        TPARequest r = to2.cancelTPARequest(context.getPlayer().getUuidAsString());
-        if (r != null) r.consumed();
-
-        context.getPlayer().sendMessage(fromLang("tpa4fabric.tpaCancel", to.getName().getString()));
+        TPARequest r = to2.cancelTPARequest(me.getPlayerUUID());
+        if (r != null) {
+            r.consumed(me);
+            me.sendChatMessage(fromLang("tpa4fabric.tpaCancel", to.getNameForScoreboard()));
+        } else me.sendChatMessage(fromLang("tpa4fabric.noSuchTpaReqExists", to.getNameForScoreboard()));
 
         return 0;
     }
 
-    // Geyser compat?
+    // Geyser compat
     public TPAPlayer getTPAPlayer(ServerPlayerEntity player) {
         if (!players.containsKey(player.getUuidAsString())) {
             if (FabricLoader.getInstance().isModLoaded("geyser-fabric")) {
