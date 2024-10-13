@@ -148,6 +148,7 @@ public class TPAManager {
 
     // Geyser compat
     public TPAPlayer getTPAPlayer(ServerPlayerEntity player) {
+        if (player == null) return null;
         if (!players.containsKey(player.getUuidAsString())) {
             if (FabricLoader.getInstance().isModLoaded("geyser-fabric")) {
                 GeyserConnection bedrockPlayer = GeyserApi.api().connectionByUuid(player.getUuid());
