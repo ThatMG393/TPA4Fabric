@@ -85,7 +85,7 @@ public class TPAPlayer {
         if (cmdInvokeTime == 0) return false;
         
         long diff = Instant.now().getEpochSecond() - cmdInvokeTime;
-        if (diff <= 5) return true;
+        if (diff <= ModConfigManager.loadOrGetConfig().tpaCooldown) return true;
 
         this.cmdInvokeTime = 0;
         return false;
