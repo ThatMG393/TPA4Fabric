@@ -40,23 +40,20 @@ public class TPAPlayer {
     }
 
     public TPARequest getTPARequest(TPAPlayer from) {
-        TPARequest r = null;
-
-        if (isTPARequestsEmpty()) return r;
+        if (isTPARequestsEmpty()) return null;
 
         if (from != null) {
-            r = tpaRequests.get(from.getPlayerUUID());
-            if (r == null) sendChatMessage(fromLang("tpa4fabric.noTpaReqFrom", from.getServerPlayerEntity().getName().getString()));
+            TPARequest r = tpaRequests.get(from.getPlayerUUID());
+            if (r == null) sendChatMessage(fromLang("tpa4fabric.noTpaReqFrom", from.getServerPlayerEntity().getNameForScoreboard()));
             return r;
-        }
-
-        if (tpaRequests.size() > 1) {
-            sendChatMessage(fromLang("tpa4fabric.multiTpaReq"));
-            return r;
+        } else {
+            if (tpaRequests.size() > 1) {
+                sendChatMessage(fromLang("tpa4fabric.multiTpaReq"));
+                return null;
+            }
         }
         
-        r = tpaRequests.get(tpaRequests.keySet().toArray()[0]);
-        return r;
+        return tpaRequests.keySet().stream().findFirst().get();
     }
 
     public TPARequest cancelTPARequest(String playerUuid) {
@@ -68,7 +65,7 @@ public class TPAPlayer {
     }
 
     public void markInCooldown() {
-        if (cmdInvokeTime != 0) System.out.println("An illegal thing occurred in Player.markInCooldown()!");
+        if (cmdInvokeTime != 0) System.out.println("marking bro on cooldown whilst on cooldown? doesnt even make any sense.");
         cmdInvokeTime = Instant.now().getEpochSecond();
     }
 
@@ -97,7 +94,6 @@ public class TPAPlayer {
     public boolean allowsTPARequests() {
         return allowTPARequests;
     }
-
 
     public boolean isTPARequestsEmpty() {
         return tpaRequests.isEmpty();
