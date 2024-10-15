@@ -6,4 +6,6 @@ public class ModConfigData {
     public int tpaTeleportTime = 5; // in seconds;
 
     public boolean defaultAllowTPARequests = true;
+
+    public int configVersion = 1; // internal value
 }

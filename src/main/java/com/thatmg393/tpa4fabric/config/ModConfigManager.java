@@ -34,6 +34,9 @@ public class ModConfigManager {
             BufferedReader bufferedReader = new BufferedReader(new FileReader(CONFIG_PATH));
             ModConfigData parsedConfig = GSON.fromJson(bufferedReader, ModConfigData.class);
 
+            if (parsedConfig.configVersion != defaultConfig.configVersion)
+                TPA4Fabric.LOGGER.warn("Config versions DO NOT MATCH!"); // TODO? : do smth with old conf ver
+            
             loadedConfig = parsedConfig;
         } catch (FileNotFoundException e) {
             TPA4Fabric.LOGGER.error("An exception occurred! " + e.toString());
