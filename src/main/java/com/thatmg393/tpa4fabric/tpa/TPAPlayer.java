@@ -25,18 +25,13 @@ public class TPAPlayer {
         this.allowTPARequests = ModConfigManager.loadOrGetConfig().defaultAllowTPARequests;
     }
 
-    public boolean newTPARequest(TPAPlayer from) {
-        if (!this.allowTPARequests) return false;
-        if (tpaRequests.containsKey(from.getPlayerUUID())) return false;
-
+    public void newTPARequest(TPAPlayer from) {
         tpaRequests.put(
             from.getPlayerUUID(),
             new TPARequest(
                 tpaRequests, from, new Timer()
             )
         );
-
-        return true;
     }
 
     public TPARequest getTPARequest(TPAPlayer from) {
@@ -53,11 +48,15 @@ public class TPAPlayer {
             }
         }
         
-        return tpaRequests.keySet().stream().findFirst().get();
+        return tpaRequests.values().stream().findFirst().orElse(null);
     }
 
     public TPARequest cancelTPARequest(String playerUuid) {
         return tpaRequests.remove(playerUuid);
+    }
+
+    public boolean hasExistingTPARequest(String fromPlayerUuid) {
+        return tpaRequests.containsKey(fromPlayerUuid);
     }
 
     public void sendChatMessage(Text message) {
