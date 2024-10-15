@@ -59,6 +59,10 @@ public class TPAManager {
             return 1;
         }
 
+        if (target.hasExistingTPARequest()) {
+            return 1;
+        }
+
         target.newTPARequest(me);
         target.markInCooldown();
 
