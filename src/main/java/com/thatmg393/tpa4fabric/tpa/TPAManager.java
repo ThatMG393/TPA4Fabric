@@ -59,12 +59,13 @@ public class TPAManager {
             return 1;
         }
 
-        if (target.hasExistingTPARequest()) {
+        if (target.hasExistingTPARequest(me.getPlayerUUID())) {
+            me.sendChatMessage(fromLang("tpa4fabric.existingTpaReq", target.getServerPlayerEntity().getNameForScoreboard()));
             return 1;
         }
 
+        me.markInCooldown();
         target.newTPARequest(me);
-        target.markInCooldown();
 
         me.sendChatMessage(fromLang("tpa4fabric.sentTpaReq", to.getNameForScoreboard()));
         target.sendChatMessage(fromLang("tpa4fabric.recvTpaReq", me.getServerPlayerEntity().getNameForScoreboard()));

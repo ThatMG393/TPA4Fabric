@@ -17,7 +17,8 @@
     "tpa4fabric.teleporting": "Teleporting...",
     "tpa4fabric.tpaCountdown": "Teleporting in {}s...",
     "tpa4fabric.successTp": "Teleported.",
-    "tpa4fabric.tpaMoved": "You moved! Cancelling teleport.",
+    "tpa4fabric.requester.moved": "You moved! Cancelling teleport.",
+    "tpa4fabric.acceptor.r_moved": "{} moved! Teleport has been canceled.",
     "tpa4fabric.tpaCancel": "You canceled your TPA request to {}",
     "tpa4fabric.noSuchTpaReqExists": "You have no TPA request to {}"
 }
