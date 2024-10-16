@@ -48,12 +48,6 @@ public record TPARequestOld(HashMap<String, TPARequestOld> container, TPAPlayerO
                     Text message = fromLang("tpa4fabric.tpaCountdown", (delta / 1000));
                     requestOwner.sendChatMessage(message);
                     whoAccepted.sendChatMessage(message);
-
-                    Position t1 = whoAccepted.getPos1();
-                    Position t2 = whoAccepted.getPos2(); //bpos
-
-                    System.out.println("pos: " + t1.getX() + " " + t1.getY() + " " + t1.getZ());
-                    System.out.println("bpos: " + t2.getX() + " " + t2.getY() + " " + t2.getZ());
                 }
             }
 

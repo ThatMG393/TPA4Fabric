@@ -9,9 +9,9 @@ public class TeleportUtils {
     ) {
         you.teleport(
             to.getServerWorld(),
-            to.getBlockPos().getX(),
-            to.getBlockPos().getY() + 1,
-            to.getBlockPos().getZ(),
+            to.getBlockPos().getX() + 0.5,
+            to.getBlockPos().getY() + 0.1,
+            to.getBlockPos().getZ() + 0.5,
             you.getYaw(),
             you.getPitch()
         );

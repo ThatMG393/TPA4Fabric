@@ -6,14 +6,19 @@ import java.util.Timer;
 
 import com.thatmg393.tpa4fabric.config.ModConfigManager;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AfterDeath;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Position;
 
 import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
-public class TPAPlayerOld {
-    private final ServerPlayerEntity realPlayer;
+public class TPAPlayerOld implements AfterDeath {
+    private ServerPlayerEntity realPlayer;
     private final String myUuid;
     private boolean allowTPARequests;
 
@@ -24,6 +29,8 @@ public class TPAPlayerOld {
         this.realPlayer = me;
         this.myUuid = me.getUuidAsString();
         this.allowTPARequests = ModConfigManager.loadOrGetConfig().defaultAllowTPARequests;
+
+        ServerLivingEntityEvents.AFTER_DEATH.register(this);
     }
 
     public void newTPARequest(TPAPlayerOld from) {
@@ -99,26 +106,12 @@ public class TPAPlayerOld {
         return tpaRequests.isEmpty();
     }
 
-    public Position getPos1() {
-        return realPlayer.getPos();
-    }
-
-    public Position getPos2() {
-        return new Position() {
-            @Override
-            public double getX() {
-                return realPlayer.getBlockPos().getX();
+    @Override
+    public void afterDeath(LivingEntity entity, DamageSource damageSource) {
+        if (entity instanceof PlayerEntity) {
+            if (((PlayerEntity)entity).getUuidAsString().equals(realPlayer.getUuidAsString())) {
+                realPlayer = (ServerPlayerEntity) entity;
             }
-
-            @Override
-            public double getY() {
-                return realPlayer.getBlockPos().getY();
-            }
-
-            @Override
-            public double getZ() {
-                return realPlayer.getBlockPos().getZ();
-            }
-        };
+        }
     }
 }

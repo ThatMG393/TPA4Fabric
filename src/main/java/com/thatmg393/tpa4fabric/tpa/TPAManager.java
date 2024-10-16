@@ -7,8 +7,11 @@ import java.util.HashMap;
 import com.thatmg393.tpa4fabric.TPA4Fabric;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.Position;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 
 public class TPAManager {
     private static final TPAManager INSTANCE = new TPAManager();
