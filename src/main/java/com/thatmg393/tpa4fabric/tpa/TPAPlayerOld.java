@@ -8,37 +8,38 @@ import com.thatmg393.tpa4fabric.config.ModConfigManager;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Position;
 
 import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
-public class TPAPlayer {
+public class TPAPlayerOld {
     private final ServerPlayerEntity realPlayer;
     private final String myUuid;
     private boolean allowTPARequests;
 
-    private HashMap<String, TPARequest> tpaRequests = new HashMap<>();
+    private HashMap<String, TPARequestOld> tpaRequests = new HashMap<>();
     private long cmdInvokeTime = 0;
 
-    public TPAPlayer(ServerPlayerEntity me) {
+    public TPAPlayerOld(ServerPlayerEntity me) {
         this.realPlayer = me;
         this.myUuid = me.getUuidAsString();
         this.allowTPARequests = ModConfigManager.loadOrGetConfig().defaultAllowTPARequests;
     }
 
-    public void newTPARequest(TPAPlayer from) {
+    public void newTPARequest(TPAPlayerOld from) {
         tpaRequests.put(
             from.getPlayerUUID(),
-            new TPARequest(
+            new TPARequestOld(
                 tpaRequests, from, new Timer()
             )
         );
     }
 
-    public TPARequest getTPARequest(TPAPlayer from) {
+    public TPARequestOld getTPARequest(TPAPlayerOld from) {
         if (isTPARequestsEmpty()) return null;
 
         if (from != null) {
-            TPARequest r = tpaRequests.get(from.getPlayerUUID());
+            TPARequestOld r = tpaRequests.get(from.getPlayerUUID());
             if (r == null) sendChatMessage(fromLang("tpa4fabric.noTpaReqFrom", from.getServerPlayerEntity().getNameForScoreboard()));
             return r;
         } else {
@@ -51,7 +52,7 @@ public class TPAPlayer {
         return tpaRequests.values().stream().findFirst().orElse(null);
     }
 
-    public TPARequest cancelTPARequest(String playerUuid) {
+    public TPARequestOld cancelTPARequest(String playerUuid) {
         return tpaRequests.remove(playerUuid);
     }
 
@@ -96,5 +97,28 @@ public class TPAPlayer {
 
     public boolean isTPARequestsEmpty() {
         return tpaRequests.isEmpty();
+    }
+
+    public Position getPos1() {
+        return realPlayer.getPos();
+    }
+
+    public Position getPos2() {
+        return new Position() {
+            @Override
+            public double getX() {
+                return realPlayer.getBlockPos().getX();
+            }
+
+            @Override
+            public double getY() {
+                return realPlayer.getBlockPos().getY();
+            }
+
+            @Override
+            public double getZ() {
+                return realPlayer.getBlockPos().getZ();
+            }
+        };
     }
 }

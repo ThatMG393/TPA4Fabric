@@ -5,7 +5,10 @@ public class ModConfigData {
     public int tpaExpireTime = 120; // in seconds;
     public int tpaTeleportTime = 5; // in seconds;
 
+    
+    public int tpaRequestLimit = 99;
+
     public boolean defaultAllowTPARequests = true;
 
-    public int configVersion = 1; // internal value
+    public int configVersion = 2; // internal value
 }
