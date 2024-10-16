@@ -1,7 +1,7 @@
 package com.thatmg393.tpa4fabric.tpa;
 
 import java.time.Instant;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Timer;
 
@@ -29,7 +29,7 @@ public class TPAPlayerWrapper {
 
     private boolean allowsTPARequests = ModConfigManager.loadOrGetConfig().defaultAllowTPARequests;
 
-    private LinkedHashMap<String, TPARequest> incomingTPARequests = new LinkedHashMap<>(ModConfigManager.loadOrGetConfig().tpaRequestLimit);
+    private HashMap<String, TPARequest> incomingTPARequests = new HashMap<>(ModConfigManager.loadOrGetConfig().tpaRequestLimit);
 
     public Optional<CommandResult> createNewTPARequest(TPAPlayerWrapper requester) {
         if (requester.equals(this)) return Optional.of(CommandResult.TPA_SELF);
@@ -48,7 +48,7 @@ public class TPAPlayerWrapper {
         if (isIncomingTPARequestEmpty()) return Optional.of(CommandResult.EMPTY_REQUESTS);
 
         if (from == null) {
-            TPARequest tpaRequest = incomingTPARequests.pollFirstEntry().getValue();
+            TPARequest tpaRequest = incomingTPARequests.values().stream().findFirst().orElse(null);
             tpaRequest.accept();
         } else {
             if (from.equals(this)) Optional.of(CommandResult.TPA_SELF);
