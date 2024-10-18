@@ -39,7 +39,8 @@ public class TPAManager {
 
         ServerTickEvents.START_SERVER_TICK.register(server -> {
             server.getPlayerManager().getPlayerList().parallelStream().forEach(player -> {
-                players.get(player.getUuidAsString()).setRealPlayer(player);
+                TPAPlayerOld p = players.get(player.getUuidAsString());
+                if (p != null) p.setRealPlayer(player);
             });
         });
     }
