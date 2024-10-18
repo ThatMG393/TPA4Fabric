@@ -106,6 +106,10 @@ public class TPAPlayerOld implements AfterDeath {
         return tpaRequests.isEmpty();
     }
 
+    public void setRealPlayer(ServerPlayerEntity p) {
+        realPlayer = p;
+    }
+
     @Override
     public void afterDeath(LivingEntity entity, DamageSource damageSource) {
         if (entity instanceof PlayerEntity) {
