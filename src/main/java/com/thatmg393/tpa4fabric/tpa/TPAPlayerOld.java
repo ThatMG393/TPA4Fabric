@@ -110,6 +110,7 @@ public class TPAPlayerOld implements AfterDeath {
     public void afterDeath(LivingEntity entity, DamageSource damageSource) {
         if (entity instanceof PlayerEntity) {
             if (((PlayerEntity)entity).getUuidAsString().equals(realPlayer.getUuidAsString())) {
+                System.out.println("Player -> " + realPlayer.getNameForScoreboard() + " died. Finna re-set the realPlayer variable.");
                 realPlayer = (ServerPlayerEntity) entity;
             }
         }

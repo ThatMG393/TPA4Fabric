@@ -12,6 +12,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Position;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public class TPAManager {
     private static final TPAManager INSTANCE = new TPAManager();
@@ -34,6 +35,12 @@ public class TPAManager {
         ServerPlayConnectionEvents.DISCONNECT.register((netHandler, server) -> {
             ServerPlayerEntity playerWhoLeft = netHandler.getPlayer();
             players.remove(playerWhoLeft.getUuidAsString());
+        });
+
+        ServerTickEvents.START_SERVER_TICK.register(server -> {
+            server.getPlayerManager().getPlayerList().parallelStream().forEach(player -> {
+                players.put(player.getUuidAsString(), new TPAPlayerOld(player));
+            });
         });
     }
 
