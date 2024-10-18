@@ -49,6 +49,10 @@ public record TPARequestOld(HashMap<String, TPARequestOld> container, TPAPlayerO
                     requestOwner.sendChatMessage(message);
                     whoAccepted.sendChatMessage(message);
                 }
+
+                if ((delta % 500) == 0) {
+                    System.out.println("is 'whoAccepted' dead? " + whoAccepted.getServerPlayerEntity().isDead());
+                }
             }
 
             @Override
