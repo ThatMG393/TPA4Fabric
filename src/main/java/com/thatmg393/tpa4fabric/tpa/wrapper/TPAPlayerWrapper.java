@@ -180,7 +180,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
 
     @Override
     public void onTPASuccess(TeleportParameters params) {
-        sendMessage(fromLang("tpa4fabric.message.teleporting.success"));
+        sendMessage(fromLang("tpa4fabric.message.teleport.success"));
         if (params != null) this.lastTPALocation = params;
     }
 

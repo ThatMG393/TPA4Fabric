@@ -10,7 +10,7 @@ public class MCTextUtils {
     }
 
     public static Text textOf(String s, Object... formats) {
-        return Text.of(MessageFormatter.format(s, formats).getMessage());
+        return Text.of(MessageFormatter.basicArrayFormat(s, formats));
     }
 
     public static Text fromLang(String key) {
