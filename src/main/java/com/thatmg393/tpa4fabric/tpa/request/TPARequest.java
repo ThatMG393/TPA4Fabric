@@ -68,11 +68,13 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper receiver, 
             public void onFinished(CountdownTimer myself) {
                 TeleportParameters teleportParams = new TeleportParameters(receiver.getCurrentDimension(), receiver.getCurrentCoordinates());
 
-                requester.teleport(teleportParams);
-                TPA4Fabric.LOGGER.info("Teleporting " + requester.name + " to " + teleportParams);
+                if (requester.beforeTeleport(teleportParams)) {
+                    requester.teleport(teleportParams);
+                    TPA4Fabric.LOGGER.info(requester.name + " teleported to " + teleportParams);
 
-                requester.onTPASuccess(teleportParams); // might just pass 'receiver' fr?
-                receiver.onTPASuccess(null);
+                    requester.onTPASuccess(teleportParams); // might just pass 'receiver' fr?
+                    receiver.onTPASuccess(null);
+                }
             }
         }, (ModConfigManager.loadOrGetConfig().tpaTeleportTime + 1) * 1000).start();
     }
