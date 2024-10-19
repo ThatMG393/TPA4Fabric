@@ -32,12 +32,8 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper receiver, 
 
     public void accept() {
         consume();
-
-        requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.accept", receiver.name));
-        receiver.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.accept", requester.name));
         
         Coordinates lastRequesterCoordinates = requester.getCurrentCoordinates();
-
         new CountdownTimer(new CountdownTimer.TimerCallback() {
             @Override
             public void onTick(CountdownTimer myself, long delta) {
