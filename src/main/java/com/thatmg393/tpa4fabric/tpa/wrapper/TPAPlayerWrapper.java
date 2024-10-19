@@ -2,6 +2,7 @@ package com.thatmg393.tpa4fabric.tpa.wrapper;
 
 import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -142,9 +143,10 @@ public class TPAPlayerWrapper implements TPAStateCallback {
     public boolean isOnCommandCooldown() {
         if (lastCommandInvokeTime == null) return false;
 
-        Instant now = Instant.now();
-        if (now.compareTo(lastCommandInvokeTime) <= ModConfigManager.loadOrGetConfig().tpaCooldown) return true;
-
+        long diff = Duration.between(lastCommandInvokeTime, Instant.now()).getSeconds();
+        if (diff < ModConfigManager.loadOrGetConfig().tpaCooldown)
+            return true;
+        
         lastCommandInvokeTime = null;
         return false;
     }
