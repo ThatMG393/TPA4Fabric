@@ -41,8 +41,13 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 				.requires(ServerCommandSource::isExecutedByPlayer)
 				.then(
 					argument("to", EntityArgumentType.player())
-				    .executes(ctx -> TPAManager.getInstance().newTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "to")))
-				)
+				    .executes(ctx -> TPAManager.getInstance().tpa(ctx.getSource().getPlayer(), EntityArgumentType.getPlayer(ctx, "to")))				)
+			);
+
+			dispatcher.register(
+				literal("tpaback")
+				.requires(ServerCommandSource::isExecutedByPlayer)
+				.executes(ctx -> TPAManager.getInstance().tpaback(ctx.getSource().getPlayer()))
 			);
 
 			dispatcher.register(
@@ -50,9 +55,9 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 				.requires(ServerCommandSource::isExecutedByPlayer)
 				.then(
 					argument("from", EntityArgumentType.player())
-				    .executes(ctx -> TPAManager.getInstance().acceptTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "from")))
+				    .executes(ctx -> TPAManager.getInstance().tpaaccept(ctx.getSource().getPlayer(), EntityArgumentType.getPlayer(ctx, "from")))
 				)
-				.executes(ctx -> TPAManager.getInstance().acceptTPA(ctx.getSource(), null))
+				.executes(ctx -> TPAManager.getInstance().tpaaccept(ctx.getSource().getPlayer(), null))
 			);
 
 			dispatcher.register(
@@ -60,18 +65,19 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 				.requires(ServerCommandSource::isExecutedByPlayer)
 				.then(
 					argument("from", EntityArgumentType.player())
-					.executes(ctx -> TPAManager.getInstance().denyTPA(ctx.getSource(), EntityArgumentType.getPlayer(ctx, "from")))
+					.executes(ctx -> TPAManager.getInstance().tpadeny(ctx.getSource().getPlayer(), EntityArgumentType.getPlayer(ctx, "from")))
 				)
-				.executes(ctx -> TPAManager.getInstance().denyTPA(ctx.getSource(), null))
+				.executes(ctx -> TPAManager.getInstance().tpadeny(ctx.getSource().getPlayer(), null))
 			);
 
 			dispatcher.register(
 				literal("tpaallow")
 				.requires(ServerCommandSource::isExecutedByPlayer)
 				.then(
-					argument("allow", EntityArgumentType.player())
-					.executes(ctx -> TPAManager.getInstance().allowTPA(ctx.getSource(), BoolArgumentType.getBool(ctx, "allow")))
+					argument("allow", BoolArgumentType.bool())
+					.executes(ctx -> TPAManager.getInstance().tpaallow(ctx.getSource().getPlayer(), BoolArgumentType.getBool(ctx, "allow")))
 				)
+				.executes(ctx -> TPAManager.getInstance().tpaallow(ctx.getSource().getPlayer()))
 			);
 
 			/*
@@ -82,11 +88,6 @@ public class TPA4Fabric implements DedicatedServerModInitializer {
 					argument("player", EntityArgumentType.player())
 					.executes(ctx -> TPAManager.getInstance().allowTPA(ctx.getSource(), BoolArgumentType.getBool(ctx, "allow")))
 				)
-			);
-
-			dispatcher.register(
-				literal("tpaback")
-				.requires(ServerCommandSource::isExecutedByPlayer)
 			);
 			*/
 
