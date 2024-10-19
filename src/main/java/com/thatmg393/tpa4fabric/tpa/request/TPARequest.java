@@ -13,8 +13,6 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.utils.CountdownTimer;
 
-import net.minecraft.server.world.ServerWorld;
-
 public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper reciever, Timer expirationTimer) {
     public TPARequest {
         expirationTimer.schedule(new TimerTask() {

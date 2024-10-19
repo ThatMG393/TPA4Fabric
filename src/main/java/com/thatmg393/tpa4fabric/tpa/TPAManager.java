@@ -1,7 +1,8 @@
 package com.thatmg393.tpa4fabric.tpa;
 
+import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
+
 import java.util.HashMap;
-import java.util.Optional;
 
 import com.thatmg393.tpa4fabric.TPA4Fabric;
 import com.thatmg393.tpa4fabric.tpa.wrapper.TPAPlayerWrapper;
@@ -9,8 +10,6 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
-
-import static com.thatmg393.tpa4fabric.utils.MCTextUtils.*;
 
 public class TPAManager {
     private static final TPAManager INSTANCE = new TPAManager();

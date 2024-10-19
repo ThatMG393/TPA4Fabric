@@ -1,8 +1,9 @@
 package com.thatmg393.tpa4fabric.tpa.wrapper;
 
+import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
+
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.Timer;
@@ -19,9 +20,6 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.util.collection.LinkedBlockPosHashSet;
-
-import static com.thatmg393.tpa4fabric.utils.MCTextUtils.*;
 
 public class TPAPlayerWrapper implements TPAStateCallback {
     public TPAPlayerWrapper(ServerPlayerEntity player) {
