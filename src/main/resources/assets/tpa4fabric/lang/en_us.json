@@ -1,7 +1,7 @@
 {
     "tpa4fabric.message.error.tpa_to_self": "You cannot teleport to yourself.",
     "tpa4fabric.message.fail.requester.moved": "You moved! Cancelling teleport...",
-    "tpa4fabric.message.fail.reciever.requester_moved": "The other player moved! Cancelling teleport...",
+    "tpa4fabric.message.fail.receiver.requester_moved": "The other player moved! Cancelling teleport...",
     "tpa4fabric.message.fail.target_dead_or_disconnected": "The player you were teleporting to has died/is dead or has disconnect from this server.",
     "tpa4fabric.message.fail.tpa_on_cooldown": "You're currently on cooldown!",
     "tpa4fabric.message.fail.has_existing_tpa": "You currently have an already existing TPA request to that player!",
@@ -18,8 +18,8 @@
     "tpa4fabric.message.tpa.allow.change.on": "TPA-Allow is now on. You will now recieve TPA requests.",
     "tpa4fabric.message.tpa.allow.change.off": "TPA-Allow is now off. No one can send you any TPA requests until you turn it back on.",
 
-    "tpa4fabric.message.reciever.tpa": "{} sent you a TPA request.",
-    "tpa4fabric.message.reciever.tpa.accept": "You accepted {}'s TPA request.",
+    "tpa4fabric.message.receiver.tpa": "{} sent you a TPA request.",
+    "tpa4fabric.message.receiver.tpa.accept": "You accepted {}'s TPA request.",
     "tpa4fabric.message.receiver.tpa.deny": "You denied {}'s TPA request.",
     "tpa4fabric.message.receiver.tpa.expire": "{}'s TPA request expired.",
     

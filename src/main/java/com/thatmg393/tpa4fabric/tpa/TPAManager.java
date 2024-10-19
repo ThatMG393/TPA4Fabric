@@ -49,7 +49,7 @@ public class TPAManager {
         switch (result) {
             case SUCCESS:
                 you.sendMessage(fromLang("tpa4fabric.message.requester.tpa", them.name));
-                them.sendMessage(fromLang("tpa4fabric.message.reciever.tpa", you.name));
+                them.sendMessage(fromLang("tpa4fabric.message.receiver.tpa", you.name));
                 return 1;
 
             case TPA_SELF:
@@ -107,10 +107,10 @@ public class TPAManager {
                 result.<String>getExtraData().ifPresentOrElse((d) -> {
                     TPAPlayerWrapper tmpPlayer = players.get(d);
 
-                    you.sendMessage(fromLang("tpa4fabric.message.reciever.tpa.accept", tmpPlayer.name));
+                    you.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.accept", tmpPlayer.name));
                     tmpPlayer.sendMessage(fromLang("tpa4fabric.message.requester.tpa.accept", you.name));
                 }, () -> {
-                    you.sendMessage(fromLang("tpa4tabric.message.reciever.tpa.accept", them.name));
+                    you.sendMessage(fromLang("tpa4tabric.message.receiver.tpa.accept", them.name));
                     them.sendMessage(fromLang("tpa4fabric.message.requester.tpa.accept", you.name));
                 });
                 
@@ -144,10 +144,10 @@ public class TPAManager {
                 result.<String>getExtraData().ifPresentOrElse((d) -> {
                     TPAPlayerWrapper tmpPlayer = players.get(d);
 
-                    you.sendMessage(fromLang("tpa4fabric.message.reciever.tpa.deny", tmpPlayer.name));
+                    you.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.deny", tmpPlayer.name));
                     tmpPlayer.sendMessage(fromLang("tpa4fabric.message.requester.tpa.deny", you.name));
                 }, () -> {
-                    you.sendMessage(fromLang("tpa4tabric.message.reciever.tpa.deny", them.name));
+                    you.sendMessage(fromLang("tpa4tabric.message.receiver.tpa.deny", them.name));
                     them.sendMessage(fromLang("tpa4fabric.message.requester.tpa.deny", you.name));
                 });
                 

@@ -13,15 +13,15 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.utils.CountdownTimer;
 
-public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper reciever, Timer expirationTimer) {
+public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper receiver, Timer expirationTimer) {
     public TPARequest {
         expirationTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                reciever.removeTPARequest(requester.uuid);
+                receiver.removeTPARequest(requester.uuid);
 
-                requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.expire", reciever.name));
-                reciever.sendMessage(fromLang("tpa4fabric.message.reciever.tpa.expire", requester.name));
+                requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.expire", receiver.name));
+                receiver.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.expire", requester.name));
             }
         }, ModConfigManager.loadOrGetConfig().tpaExpireTime * 1000);
     }
@@ -33,8 +33,8 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper reciever, 
     public void accept() {
         consume();
 
-        reciever.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.accept", requester.name));
-        requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.accept", reciever.name));
+        receiver.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.accept", requester.name));
+        requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.accept", receiver.name));
 
         Coordinates lastRequesterCoordinates = requester.getCurrentCoordinates();
 
@@ -44,7 +44,7 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper reciever, 
                 if ((delta % 1000) == 0) {
                     if (!lastRequesterCoordinates.equals(requester.getCurrentCoordinates())) {
                         requester.onTPAFail(TPAFailReason.YOU_MOVED);
-                        reciever.onTPAFail(TPAFailReason.REQUESTER_MOVED);
+                        receiver.onTPAFail(TPAFailReason.REQUESTER_MOVED);
                         myself.stop();
 
                         return;
@@ -52,10 +52,10 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper reciever, 
 
                     float remain = (delta / 1000);
                     requester.sendMessage(fromLang("tpa4fabric.message.teleport.countdown", remain));
-                    reciever.sendMessage(fromLang("tpa4fabric.message.teleport.countdown", remain));
+                    receiver.sendMessage(fromLang("tpa4fabric.message.teleport.countdown", remain));
                 }
 
-                if (!reciever.isAlive()) {
+                if (!receiver.isAlive()) {
                     requester.onTPAFail(TPAFailReason.TARGET_DEAD_OR_DISCONNECTED);
                     myself.stop();
                 }
@@ -66,22 +66,22 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper reciever, 
 
             @Override
             public void onFinished(CountdownTimer myself) {
-                TeleportParameters teleportParams = new TeleportParameters(reciever.getCurrentDimension(), reciever.getCurrentCoordinates());
+                TeleportParameters teleportParams = new TeleportParameters(receiver.getCurrentDimension(), receiver.getCurrentCoordinates());
 
                 requester.teleport(teleportParams);
                 TPA4Fabric.LOGGER.info("Teleporting " + requester.name + " to " + teleportParams);
 
-                requester.onTPASuccess(teleportParams); // might just pass 'reciever' fr?
-                reciever.onTPASuccess(null);
+                requester.onTPASuccess(teleportParams); // might just pass 'receiver' fr?
+                receiver.onTPASuccess(null);
             }
         }, (ModConfigManager.loadOrGetConfig().tpaTeleportTime + 1) * 1000).start();
     }
 
     public void deny() {
         consume();
-        reciever.removeTPARequest(requester.uuid);
+        receiver.removeTPARequest(requester.uuid);
 
-        requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.deny", reciever.name));
-        reciever.sendMessage(fromLang("tpa4fabric.message.reciever.tpa.deny", requester.name));
+        requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.deny", receiver.name));
+        receiver.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.deny", requester.name));
     }
 }

@@ -164,7 +164,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
     }
 
     public boolean isAlive() {
-        return player.isAlive() && !Arrays.asList(player.getServer().getPlayerNames()).parallelStream().filter(n -> n.equals(name)).findFirst().isPresent();
+        return player.isAlive() && Arrays.asList(player.getServer().getPlayerNames()).parallelStream().filter(n -> n.equals(name)).findFirst().isPresent();
     }
 
     public void teleport(TeleportParameters params) {
@@ -192,7 +192,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             break;
 
             case REQUESTER_MOVED:
-                sendMessage(fromLang("tpa4fabric.message.fail.reciever.requester_moved"));
+                sendMessage(fromLang("tpa4fabric.message.fail.receiver.requester_moved"));
             break;
 
             case TARGET_DEAD_OR_DISCONNECTED:
