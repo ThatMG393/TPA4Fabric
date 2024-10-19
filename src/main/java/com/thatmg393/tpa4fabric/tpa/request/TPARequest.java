@@ -23,7 +23,7 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper reciever, 
                 requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.expire", reciever.name));
                 reciever.sendMessage(fromLang("tpa4fabric.message.reciever.tpa.expire", requester.name));
             }
-        }, 0);
+        }, ModConfigManager.loadOrGetConfig().tpaExpireTime * 1000);
     }
 
     private void consume() {
