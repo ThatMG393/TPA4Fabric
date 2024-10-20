@@ -23,11 +23,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
 
       - name: Validate gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
-      - name: Setup jdk ${{ matrix.java }}
+      - name: Setup JDK ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java }}
@@ -36,28 +38,30 @@ jobs:
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build
+      - name: Build mod
         id: build_bin
         run: bash build.sh ${{ github.ref }}
 
       - name: Capture build artifacts
-        if: ${{ matrix.java == '21' }}
-        uses: actions/upload-artifact@v3
+        if: ${{ matrix.java == '17' }}
+        uses: actions/upload-artifact@v4
         with:
           name: tpa4fabric-build
           path: build/libs/
 
       - name: Update CHANGELOG.md
-        if: ${{ matrix.java == '21' && startsWith(steps.build_bin.outputs.binver, 'v') }}
-        uses: requarks/changelog-action@v1
+        if: ${{ matrix.java == '17' && startsWith(steps.build_bin.outputs.binver, 'v') }}
+        uses: requarks/changelog-action@v1.10.2
         with:
           token: ${{ secrets.GH_TOKEN }}
           tag: ${{ github.ref_name }}
           includeInvalidCommits: true
           excludeTypes: ''
+          useGitmojis: false
+          reverseOrder: true
 
-      - name: Upload to Modrinth
-        if: ${{ matrix.java == '21' && startsWith(steps.build_bin.outputs.binver, 'v') }}
+      - name: Upload to Modrinth and Github
+        if: ${{ matrix.java == '17' && startsWith(steps.build_bin.outputs.binver, 'v') }}
         uses: Kir-Antipov/mc-publish@v3.3
         with: 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
@@ -73,8 +77,8 @@ jobs:
           changelog-file: CHANGELOG.md
 
       - name: Commit CHANGELOG.md
-        if: ${{ matrix.java == '21' && startsWith(steps.build_bin.outputs.binver, 'v') }}
-        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ matrix.java == '17' && startsWith(steps.build_bin.outputs.binver, 'v') }}
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           branch: master
           commit_message: 'Release: Update CHANGELOG.md for ${{ steps.build_bin.outputs.binver }} [skip ci]'
