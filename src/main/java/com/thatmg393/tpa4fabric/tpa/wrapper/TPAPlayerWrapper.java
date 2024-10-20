@@ -17,9 +17,13 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 
+import net.minecraft.entity.decoration.DisplayEntity.TextDisplayEntity.TextAlignment;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 public class TPAPlayerWrapper implements TPAStateCallback {
     public TPAPlayerWrapper(ServerPlayerEntity player) {
@@ -149,8 +153,8 @@ public class TPAPlayerWrapper implements TPAStateCallback {
         return false;
     }
 
-    public void sendMessage(Text message) {
-        player.sendMessage(Text.literal("[TPA4Fabric]: ").append(message));
+    public void sendMessage(MutableText message) {
+        player.sendMessage(Text.literal("[TPA4Fabric]: ").formatted(Formatting.BOLD).formatted(Formatting.GOLD).append(message.formatted(Formatting.BOLD)));
     }
 
     public Coordinates getCurrentCoordinates() {
