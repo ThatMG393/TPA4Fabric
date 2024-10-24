@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.0.3+release.2] - 2024-10-24
+### Other Changes
+- [`eee14bc`](https://github.com/ThatMG393/TPA4Fabric/commit/eee14bc9979d70cc680dda580d57fbd7b7c2874c) - Fix double "Teleporting in Xs..." *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`d6cec22`](https://github.com/ThatMG393/TPA4Fabric/commit/d6cec229ef7aebb746d4a91dcfbc77a969b192f6) - Remove unused imports *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`ab7a799`](https://github.com/ThatMG393/TPA4Fabric/commit/ab7a79981d8a27a7f20fc4fcfaf89aba6bf3b035) - Merge branch 'master' of https://github.com/ThatMG393/TPA4Fabric *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`02d198b`](https://github.com/ThatMG393/TPA4Fabric/commit/02d198b9c3093d7f82d9f449205b8e148f6265b4) - Add a little bit of formatting *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`de9b63a`](https://github.com/ThatMG393/TPA4Fabric/commit/de9b63ad22fe3da1f460306ee7bbcb555a609eee) - Update CI thingies, upload built artifacts from Java 17 *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`3387940`](https://github.com/ThatMG393/TPA4Fabric/commit/33879402c3e623d8d1193888cb90cc950fd6ad9b) - Remove useless `TPAPlayerWrapper#sendMessage(Text)` on `TPARequest#accept()` *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`39b66ef`](https://github.com/ThatMG393/TPA4Fabric/commit/39b66efbead73792bbbd6b7f188d9fcc74bff644) - Dont check for Y axis when teleporting, also increase frequency of position checking *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+
+
 ## [v0.0.3+release.1] - 2024-10-19
 ### :flying_saucer: Other Changes
 - [`afebafc`](https://github.com/ThatMG393/TPA4Fabric/commit/afebafc812fcbeab53b1d96375e1572c3d382d1b) - Hopefully fixes future release builds *(commit by [@ThatMG393](https://github.com/ThatMG393))*
@@ -46,3 +57,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [`a46bc23`](https://github.com/ThatMG393/TPA4Fabric/commit/a46bc23e6ee436d288c9fa69ea3de2ce6fa79862) - Fix infinite cooldown bug *(commit by [@ThatMG393](https://github.com/ThatMG393))*
 
 [v0.0.3+release.1]: https://github.com/ThatMG393/TPA4Fabric/compare/v0.0.2+release.1...v0.0.3+release.1
+[v0.0.3+release.2]: https://github.com/ThatMG393/TPA4Fabric/compare/v0.0.3+release.1...v0.0.3+release.2
