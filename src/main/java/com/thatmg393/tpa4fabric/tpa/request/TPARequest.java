@@ -38,15 +38,17 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper receiver, 
             @Override
             public void onTick(CountdownTimer myself, long delta) {
                 if ((delta % 500) == 0) {
-                    if (lastRequesterCoordinates.x() != requester.getCurrentCoordinates().x()
-                     && lastRequesterCoordinates.z() != requester.getCurrentCoordinates().z()) {
+                    if ((int) lastRequesterCoordinates.x() != (int) requester.getCurrentCoordinates().x()
+                     && (int) lastRequesterCoordinates.z() != (int) requester.getCurrentCoordinates().z()) {
                         requester.onTPAFail(TPAFailReason.YOU_MOVED);
                         receiver.onTPAFail(TPAFailReason.REQUESTER_MOVED);
                         myself.stop();
 
                         return;
                     }
+                }
 
+                if ((delta % 1000) == 0) {
                     float remain = (delta / 1000);
                     requester.sendMessage(fromLang("tpa4fabric.message.teleport.countdown", remain));
                     receiver.sendMessage(fromLang("tpa4fabric.message.teleport.countdown", remain));
