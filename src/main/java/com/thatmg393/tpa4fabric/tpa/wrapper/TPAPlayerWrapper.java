@@ -18,27 +18,29 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AfterRespawn;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-public class TPAPlayerWrapper implements TPAStateCallback {
+public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
     public TPAPlayerWrapper(ServerPlayerEntity player) {
         this.name = player.getNameForScoreboard();
         this.uuid = player.getUuidAsString();
 
         this.player = player;
+
+        ServerPlayerEvents.AFTER_RESPAWN.register(this);
     }
 
     public final String name;
     public final String uuid;
 
-    private final ServerPlayerEntity player;
-
+    private ServerPlayerEntity player;
     private Instant lastCommandInvokeTime = null;
-
     private TeleportParameters lastTPALocation = null;
 
     private boolean allowTPARequests = ModConfigManager.loadOrGetConfig().defaultAllowTPARequests;
@@ -208,5 +210,10 @@ public class TPAPlayerWrapper implements TPAStateCallback {
                 sendMessage(fromLang("tpa4fabric.message.fail.target_dead_or_disconnected"));
             break;
         }
+    }
+
+    @Override
+    public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
+        if (alive && newPlayer.getUuidAsString().equals(uuid)) player = newPlayer;
     }
 }
