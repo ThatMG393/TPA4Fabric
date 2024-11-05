@@ -214,6 +214,6 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
 
     @Override
     public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
-        if (!alive && newPlayer.getUuidAsString().equals(uuid)) player = newPlayer;
+        if (newPlayer.getUuidAsString().equals(uuid)) player = newPlayer;
     }
 }
