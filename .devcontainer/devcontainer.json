@@ -1,11 +1,12 @@
 {
     "name": "Java",
-    "image": "mcr.microsoft.com/devcontainers/java:1-21-bullseye",
+    "image": "mcr.microsoft.com/devcontainers/base:bullseye",
     "features": {
         "ghcr.io/devcontainers/features/java:1": {
-            "version": "none",
+            "version": "21.0.5",
             "installMaven": "false",
-            "installGradle": "true"
+            "installGradle": "true",
+            "jdkDistro": "graal"
         },
         "ghcr.io/devcontainers/features/desktop-lite:1": {}
     },
