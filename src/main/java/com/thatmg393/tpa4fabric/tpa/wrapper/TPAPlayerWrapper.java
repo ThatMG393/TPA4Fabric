@@ -18,8 +18,12 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents.AllowDeath;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AfterRespawn;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
@@ -30,7 +34,6 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
     public TPAPlayerWrapper(ServerPlayerEntity player) {
         this.name = player.getNameForScoreboard();
         this.uuid = player.getUuidAsString();
-
         this.player = player;
 
         ServerPlayerEvents.AFTER_RESPAWN.register(this);
@@ -214,6 +217,9 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
 
     @Override
     public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
-        if (newPlayer.getUuidAsString().equals(uuid)) player = newPlayer;
+        if (newPlayer != null && newPlayer.getUuidAsString().equals(uuid)) {
+            TPA4Fabric.LOGGER.info("Updating player reference of " + name + " from [" + newPlayer.getNameForScoreboard() + ", " + newPlayer.getUuidAsString() + "]");
+            player = newPlayer; // TODO: update references to already sent TPARequests
+        }
     }
 }
