@@ -29,6 +29,8 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.ChunkPos;
 
 public class TPAPlayerWrapper implements TPAStateCallback {
+    public static final ChunkTicketType<ChunkPos> AFTER_TELEPORT = ChunkTicketType.create("after_teleport", Comparator.comparingLong(ChunkPos::toLong), 30);
+    
     public TPAPlayerWrapper(ServerPlayerEntity player) {
         this.name = player.getNameForScoreboard();
         this.uuid = player.getUuidAsString();
@@ -190,11 +192,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             );
 
             player.getServerWorld().getChunkManager().addTicket(
-                ChunkTicketType.create(
-                    "after_teleport",
-                    Comparator.comparingLong(ChunkPos::toLong),
-                    30
-                ),
+                AFTER_TELEPORT,
                 lastTPALocationChunkPos,
                 3,
                 lastTPALocationChunkPos
