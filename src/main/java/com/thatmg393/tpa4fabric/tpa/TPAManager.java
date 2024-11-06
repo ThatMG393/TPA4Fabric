@@ -36,6 +36,7 @@ public class TPAManager {
         });
 
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+            // TODO: update references to already sent TPARequests
             TPAPlayerWrapper playerWrapper = players.get(newPlayer.getUuidAsString());
             if (playerWrapper != null) playerWrapper.updatePlayerReference(newPlayer);
             else TPA4Fabric.LOGGER.warn("Somehow the respawned player is not stored in the HashMap, weird.");

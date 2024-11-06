@@ -5,6 +5,7 @@ import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.Timer;
@@ -18,14 +19,16 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AfterRespawn;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.ServerWorldAccess;
 
-public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
+public class TPAPlayerWrapper implements TPAStateCallback {
     public TPAPlayerWrapper(ServerPlayerEntity player) {
         this.name = player.getNameForScoreboard();
         this.uuid = player.getUuidAsString();
@@ -38,6 +41,7 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
     private ServerPlayerEntity player;
     private Instant lastCommandInvokeTime = null;
     private TeleportParameters lastTPALocation = null;
+    private ChunkPos lastTPALocationChunkPos = null;
 
     private boolean allowTPARequests = ModConfigManager.loadOrGetConfig().defaultAllowTPARequests;
 
@@ -145,7 +149,7 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
             TPA4Fabric.LOGGER.info("Tried to update player reference with an another player");
             return;
         }
-
+        
         player = newPlayer;
     }
 
@@ -188,12 +192,24 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
                 player.getYaw(),
                 player.getPitch()
             );
+
+            player.getServerWorld().getChunkManager().addTicket(
+                ChunkTicketType.create(
+                    "after_teleport",
+                    Comparator.comparingLong(ChunkPos::toLong),
+                    30
+                ),
+                lastTPALocationChunkPos,
+                3,
+                lastTPALocationChunkPos
+            );
         });
     }
 
     @Override
     public boolean beforeTeleport(TeleportParameters params) {
         this.lastTPALocation = new TeleportParameters(getCurrentDimension(), getCurrentCoordinates());
+        this.lastTPALocationChunkPos = player.getChunkPos();
         return allowsTPARequests();
     }
 
@@ -216,14 +232,6 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
             case TARGET_DEAD_OR_DISCONNECTED:
                 sendMessage(fromLang("tpa4fabric.message.fail.target_dead_or_disconnected"));
             break;
-        }
-    }
-
-    @Override
-    public void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive) {
-        TPA4Fabric.LOGGER.info("Updating player reference of [" + newPlayer.getNameForScoreboard() + ", " + newPlayer.getUuidAsString() + "]");
-        if (player.getUuidAsString().equals(uuid)) {
-            player = newPlayer; // TODO: update references to already sent TPARequests
         }
     }
 }
