@@ -179,14 +179,16 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
     }
 
     public void teleport(TeleportParameters params) {
-        player.teleport(
-            params.dimension(),
-            params.coordinates().x(),
-            params.coordinates().y(),
-            params.coordinates().z(),
-            player.getYaw(),
-            player.getPitch()
-        );
+        player.getServer().executeSync(() -> {
+            player.teleport(
+                params.dimension(),
+                params.coordinates().x(),
+                params.coordinates().y(),
+                params.coordinates().z(),
+                player.getYaw(),
+                player.getPitch()
+            );
+        });
     }
 
     @Override

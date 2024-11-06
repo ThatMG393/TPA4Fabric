@@ -2,11 +2,12 @@ package com.thatmg393.tpa4fabric.utils;
 
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * CountdownTimer class manages a countdown timer that triggers a callback on each tick and when the timer finishes.
  */
-public class CountdownTimer {
+public class CountdownTimer extends TimerTask {
     private Timer scheduler;
     private TimerCallback callback;
 
@@ -15,7 +16,7 @@ public class CountdownTimer {
 
     private int tickRate = 500;
 
-    private boolean running;
+    private AtomicBoolean running;
 
     /**
      * Constructs a CountdownTimer with a specified duration.
@@ -27,12 +28,6 @@ public class CountdownTimer {
         TimerCallback callback,
         long duration
     ) {
-        if (duration <= 0) {
-            internalStop();
-            callback.onFinished(this);
-            return;
-        }
-
         this.scheduler = new Timer();
         this.callback = callback;
         
@@ -52,12 +47,6 @@ public class CountdownTimer {
         int tickRate
     ) {
         this(callback, duration);
-        if (tickRate >= duration) {
-            internalStop();
-            callback.onFinished(this);
-            return;
-        }
-
         this.tickRate = tickRate;
     }
 
@@ -65,19 +54,16 @@ public class CountdownTimer {
      * Starts the countdown timer. It schedules a task to run at fixed intervals based on the tick rate.
      */
     public synchronized void start() {
-        this.running = true;
-        scheduler.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                now += tickRate;
-                remaining -= tickRate; // Subtract tickRate from remaining instead of now
-                
-                if (remaining <= 0) {
-                    internalStop();
-                    callback.onFinished(CountdownTimer.this);
-                } else callback.onTick(CountdownTimer.this, now);
-            }
-        }, 0, tickRate);
+        if (isRunning()) return;
+        if (remaining <= 0 || tickRate >= remaining) {
+            internalStop();
+            callback.onFinished(this);
+
+            return;
+        }
+
+        this.running.set(true);
+        scheduler.scheduleAtFixedRate(this, 0, tickRate);
     }
 
     /** 
@@ -97,15 +83,30 @@ public class CountdownTimer {
      * @return true if the timer is running, false otherwise.
      */
     public boolean isRunning() {
-        return this.running;
+        return this.running.get();
     }
 
     /**
      * Internal method to stop the timer without triggering the stop callback. It cancels the scheduler.
      */
     private synchronized void internalStop() {
-        this.running = false;
+        this.running.set(false);
+        this.cancel();
         scheduler.cancel();
+    }
+
+    /*
+     * Main logic/implementation of this class 
+     */
+    @Override
+    public void run() {
+        now += tickRate;
+        remaining -= tickRate; // Subtract tickRate from remaining instead of now
+        
+        if (remaining <= 0) {
+            internalStop();
+            callback.onFinished(CountdownTimer.this);
+        } else callback.onTick(CountdownTimer.this, now);
     }
 
     /**
