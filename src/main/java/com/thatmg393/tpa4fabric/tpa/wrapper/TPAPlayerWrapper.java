@@ -111,6 +111,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
          * 2. Make TPABackRequest and extend Request (will also be useful for /tpahere)
          * 3. magic.
          */
+        lastTPALocationChunkPos = player.getServerWorld().getChunk((int) lastTPALocation.coordinates().x(), (int) lastTPALocation.coordinates().y()).getPos();
         teleport(lastTPALocation);
 
         lastTPALocation = null; // consume
