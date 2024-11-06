@@ -52,8 +52,10 @@ public class TPAPlayerWrapper implements TPAStateCallback {
     public Optional<CommandResult> createNewTPARequest(TPAPlayerWrapper requester) {
         if (requester.equals(this)) return Optional.of(CommandResult.TPA_SELF);
         if (!allowsTPARequests()) return Optional.of(CommandResult.NOT_ALLOWED);
+        
         Pair<Boolean, Optional<Long>> result = requester.isOnCommandCooldown();
-        if (result.first()) return Optional.of(CommandResult.ON_COOLDOWN.withExtraData(result.second()));
+        if (result.first()) return Optional.of(CommandResult.ON_COOLDOWN.setExtraData(result.second().get()));
+        
         if (hasExistingTPARequest(requester.uuid)) return Optional.of(CommandResult.HAS_EXISTING);
         
         requester.markInCooldown();
@@ -71,7 +73,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
             incomingTPARequests.remove(targetUuid).accept();
 
-            return Optional.of(CommandResult.SUCCESS.withExtraData(targetUuid));
+            return Optional.of(CommandResult.SUCCESS.setExtraData(targetUuid));
         } else {
             if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
             if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
@@ -89,7 +91,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
             incomingTPARequests.remove(targetUuid).accept();
 
-            return Optional.of(CommandResult.SUCCESS.withExtraData(targetUuid));
+            return Optional.of(CommandResult.SUCCESS.setExtraData(targetUuid));
         } else {
             if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
             if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
@@ -156,7 +158,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
 
         long diff = Duration.between(lastCommandInvokeTime, Instant.now()).getSeconds();
         if (diff < ModConfigManager.loadOrGetConfig().tpaCooldown)
-            return Pair.of(true, Optional.of(diff));
+            return Pair.of(true, Optional.of(Math.abs(diff - ModConfigManager.loadOrGetConfig().tpaCooldown)));
         
         lastCommandInvokeTime = null;
         return Pair.of(false, Optional.empty());

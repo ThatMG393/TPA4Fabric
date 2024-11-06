@@ -4,6 +4,8 @@ import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
 import java.util.HashMap;
 
+import org.slf4j.event.Level;
+
 import com.thatmg393.tpa4fabric.TPA4Fabric;
 import com.thatmg393.tpa4fabric.tpa.wrapper.TPAPlayerWrapper;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
@@ -107,9 +109,8 @@ public class TPAManager {
     ) {
         TPAPlayerWrapper you = players.get(executer.getUuidAsString());
         TPAPlayerWrapper them = target == null ? null : players.get(target.getUuidAsString());
-
+        
         CommandResult result = you.acceptTPARequest(them).orElse(CommandResult.IGNORE);
-        TPA4Fabric.LOGGER.info("tpaaccept: got result " + result);
         switch (result) {
             case SUCCESS:
                 result.<String>getExtraData().ifPresentOrElse((d) -> {

@@ -20,12 +20,10 @@ public enum CommandResult {
 
     private Object extraData = null;
 
-    private CommandResult() {
+    private CommandResult() { }
 
-    }
-
-    public CommandResult withExtraData(Object any) {
-        this.extraData = any;
+    public CommandResult setExtraData(Object data) {
+        this.extraData = data;
         return this;
     }
 
