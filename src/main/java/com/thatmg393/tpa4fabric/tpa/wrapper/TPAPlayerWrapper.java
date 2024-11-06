@@ -140,6 +140,15 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
         lastCommandInvokeTime = Instant.now();
     }
 
+    public void updatePlayerReference(ServerPlayerEntity newPlayer) {
+        if (!newPlayer.getUuidAsString().equals(uuid)) {
+            TPA4Fabric.LOGGER.info("Tried to update player reference with an another player");
+            return;
+        }
+
+        player = newPlayer;
+    }
+
     public boolean isOnCommandCooldown() {
         if (lastCommandInvokeTime == null) return false;
 

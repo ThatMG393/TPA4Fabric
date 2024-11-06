@@ -24,10 +24,10 @@ public class TPAManager {
             ServerPlayerEntity playerWhoJoined = netHandler.getPlayer();
             TPA4Fabric.LOGGER.info(playerWhoJoined.getNameForScoreboard() + " joined the server, registering in the TPA...");
 
-            ServerPlayerEvents.AFTER_RESPAWN.register(players.putIfAbsent(
+            players.putIfAbsent(
                 playerWhoJoined.getUuidAsString(),
                 new TPAPlayerWrapper(playerWhoJoined)
-            ));
+            );
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((netHandler, server) -> {
@@ -35,7 +35,11 @@ public class TPAManager {
             players.remove(playerWhoLeft.getUuidAsString());
         });
 
-
+        ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+            TPAPlayerWrapper playerWrapper = players.get(newPlayer.getUuidAsString());
+            if (playerWrapper != null) playerWrapper.updatePlayerReference(newPlayer);
+            else TPA4Fabric.LOGGER.warn("Somehow the respawned player is not stored in the HashMap, weird.");
+        });
     }
 
     private HashMap<String, TPAPlayerWrapper> players = new HashMap<>();
