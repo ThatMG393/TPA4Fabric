@@ -69,7 +69,7 @@ public class TPAManager {
                 return 0;
 
             case ON_COOLDOWN:
-                you.sendMessage(fromLang("tpa4fabric.message.fail.tpa_on_cooldown", (Long) result.getExtraData().get()));
+                you.sendMessage(fromLang("tpa4fabric.message.fail.tpa_on_cooldown", result.<Long>getExtraData().get()));
                 return 0;
 
             case HAS_EXISTING:
@@ -109,7 +109,7 @@ public class TPAManager {
         TPAPlayerWrapper them = target == null ? null : players.get(target.getUuidAsString());
 
         CommandResult result = you.acceptTPARequest(them).orElse(CommandResult.IGNORE);
-
+        TPA4Fabric.LOGGER.info("tpaaccept: got result " + result);
         switch (result) {
             case SUCCESS:
                 result.<String>getExtraData().ifPresentOrElse((d) -> {
