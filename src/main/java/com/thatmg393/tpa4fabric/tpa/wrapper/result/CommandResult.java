@@ -24,8 +24,9 @@ public enum CommandResult {
 
     }
 
-    public void withExtraData(Object any) {
+    public CommandResult withExtraData(Object any) {
         this.extraData = any;
+        return this;
     }
 
     @SuppressWarnings("unchecked")

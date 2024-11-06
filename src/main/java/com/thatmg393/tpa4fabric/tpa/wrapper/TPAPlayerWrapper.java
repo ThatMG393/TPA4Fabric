@@ -19,6 +19,7 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 
+import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
@@ -26,7 +27,6 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.ServerWorldAccess;
 
 public class TPAPlayerWrapper implements TPAStateCallback {
     public TPAPlayerWrapper(ServerPlayerEntity player) {
@@ -50,7 +50,8 @@ public class TPAPlayerWrapper implements TPAStateCallback {
     public Optional<CommandResult> createNewTPARequest(TPAPlayerWrapper requester) {
         if (requester.equals(this)) return Optional.of(CommandResult.TPA_SELF);
         if (!allowsTPARequests()) return Optional.of(CommandResult.NOT_ALLOWED);
-        if (requester.isOnCommandCooldown()) return Optional.of(CommandResult.ON_COOLDOWN);
+        Pair<Boolean, Optional<Long>> result = requester.isOnCommandCooldown();
+        if (result.first()) return Optional.of(CommandResult.ON_COOLDOWN.withExtraData(result.second()));
         if (hasExistingTPARequest(requester.uuid)) return Optional.of(CommandResult.HAS_EXISTING);
         
         requester.markInCooldown();
@@ -68,10 +69,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
             incomingTPARequests.remove(targetUuid).accept();
 
-            CommandResult tmpResult = CommandResult.SUCCESS;
-            tmpResult.withExtraData(targetUuid);
-
-            return Optional.of(tmpResult);
+            return Optional.of(CommandResult.SUCCESS.withExtraData(targetUuid));
         } else {
             if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
             if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
@@ -89,10 +87,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
             incomingTPARequests.remove(targetUuid).accept();
 
-            CommandResult tmpResult = CommandResult.SUCCESS;
-            tmpResult.withExtraData(targetUuid);
-
-            return Optional.of(tmpResult);
+            return Optional.of(CommandResult.SUCCESS.withExtraData(targetUuid));
         } else {
             if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
             if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
@@ -154,15 +149,15 @@ public class TPAPlayerWrapper implements TPAStateCallback {
         player = newPlayer;
     }
 
-    public boolean isOnCommandCooldown() {
-        if (lastCommandInvokeTime == null) return false;
+    public Pair<Boolean, Optional<Long>> isOnCommandCooldown() {
+        if (lastCommandInvokeTime == null) return Pair.of(false, Optional.empty());
 
         long diff = Duration.between(lastCommandInvokeTime, Instant.now()).getSeconds();
         if (diff < ModConfigManager.loadOrGetConfig().tpaCooldown)
-            return true;
+            return Pair.of(true, Optional.of(diff));
         
         lastCommandInvokeTime = null;
-        return false;
+        return Pair.of(false, Optional.empty());
     }
 
     public void sendMessage(MutableText message) {

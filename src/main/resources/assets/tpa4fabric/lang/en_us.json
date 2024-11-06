@@ -3,7 +3,7 @@
     "tpa4fabric.message.fail.requester.moved": "You moved! Cancelling teleport...",
     "tpa4fabric.message.fail.receiver.requester_moved": "The other player moved! Cancelling teleport...",
     "tpa4fabric.message.fail.target_dead_or_disconnected": "The player you were teleporting to has died/is dead or has disconnect from this server.",
-    "tpa4fabric.message.fail.tpa_on_cooldown": "You're currently on cooldown!",
+    "tpa4fabric.message.fail.tpa_on_cooldown": "You're currently on cooldown! Wait for another {} seconds...",
     "tpa4fabric.message.fail.has_existing_tpa": "You currently have an already existing TPA request to that player!",
     "tpa4fabric.message.fail.no_previous_coordinates": "You can't use TPABack because you have not teleported to any player.",
     "tpa4fabric.message.fail.empty_requests": "Nobody sent you a TPA request yet.",

@@ -69,7 +69,7 @@ public class TPAManager {
                 return 0;
 
             case ON_COOLDOWN:
-                you.sendMessage(fromLang("tpa4fabric.message.fail.tpa_on_cooldown")); // TODO: also include remaining time
+                you.sendMessage(fromLang("tpa4fabric.message.fail.tpa_on_cooldown", (Long) result.getExtraData().get()));
                 return 0;
 
             case HAS_EXISTING:
