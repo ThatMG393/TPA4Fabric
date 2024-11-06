@@ -18,7 +18,6 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.AfterRespawn;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -31,9 +30,6 @@ public class TPAPlayerWrapper implements TPAStateCallback, AfterRespawn {
         this.name = player.getNameForScoreboard();
         this.uuid = player.getUuidAsString();
         this.player = player;
-
-        TPA4Fabric.LOGGER.info("Registering listener for player respawn of " + name);
-        ServerPlayerEvents.AFTER_RESPAWN.register(this);
     }
 
     public final String name;

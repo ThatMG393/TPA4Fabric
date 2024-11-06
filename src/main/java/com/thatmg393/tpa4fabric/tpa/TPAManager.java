@@ -8,6 +8,7 @@ import com.thatmg393.tpa4fabric.TPA4Fabric;
 import com.thatmg393.tpa4fabric.tpa.wrapper.TPAPlayerWrapper;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -22,17 +23,19 @@ public class TPAManager {
         ServerPlayConnectionEvents.JOIN.register((netHandler, packetSender, server) -> {
             ServerPlayerEntity playerWhoJoined = netHandler.getPlayer();
             TPA4Fabric.LOGGER.info(playerWhoJoined.getNameForScoreboard() + " joined the server, registering in the TPA...");
-            
-            players.putIfAbsent(
+
+            ServerPlayerEvents.AFTER_RESPAWN.register(players.putIfAbsent(
                 playerWhoJoined.getUuidAsString(),
                 new TPAPlayerWrapper(playerWhoJoined)
-            );
+            ));
         });
 
         ServerPlayConnectionEvents.DISCONNECT.register((netHandler, server) -> {
             ServerPlayerEntity playerWhoLeft = netHandler.getPlayer();
             players.remove(playerWhoLeft.getUuidAsString());
         });
+
+
     }
 
     private HashMap<String, TPAPlayerWrapper> players = new HashMap<>();
