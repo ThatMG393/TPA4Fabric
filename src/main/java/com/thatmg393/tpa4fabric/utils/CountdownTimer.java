@@ -8,9 +8,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * CountdownTimer class manages a countdown timer that triggers a callback on each tick and when the timer finishes.
  */
 public class CountdownTimer extends TimerTask {
-    private final Timer scheduler;
-    private final TimerCallback callback;
+    private final Timer scheduler = new Timer("CountdownTimer");
     private final AtomicBoolean running = new AtomicBoolean();
+    private final TimerCallback callback;
 
     private long now = 0;
     private long remaining;
@@ -27,9 +27,7 @@ public class CountdownTimer extends TimerTask {
         TimerCallback callback,
         long duration
     ) {
-        this.scheduler = new Timer();
         this.callback = callback;
-        
         this.remaining = duration;
     }
 
