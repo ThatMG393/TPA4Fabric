@@ -182,7 +182,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
     }
 
     public boolean isAlive() {
-        return player.isAlive() && Arrays.asList(player.getServer().getPlayerNames()).parallelStream().filter(n -> n.equals(name)).findFirst().isPresent();
+        return player.isAlive() && !player.isRemoved() && Arrays.asList(player.getServer().getPlayerNames()).parallelStream().filter(n -> n.equals(name)).findFirst().isPresent();
     }
 
     public void teleport(TeleportParameters params) {
