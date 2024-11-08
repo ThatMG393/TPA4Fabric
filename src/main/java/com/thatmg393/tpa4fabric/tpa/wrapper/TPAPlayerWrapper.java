@@ -73,11 +73,10 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
             incomingTPARequests.remove(targetUuid).accept();
 
-            TPA4Fabric.LOGGER.info("before return at accept!");
-            var r = Optional.<CommandResult>of(CommandResult.SUCCESS.setExtraData(targetUuid));
-            TPA4Fabric.LOGGER.info("we returnin bois!");
-
-            return r;
+            CommandResult r = CommandResult.SUCCESS;
+            r.setExtraData(targetUuid);
+            
+            return Optional.of(r);
         }
 
         if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
