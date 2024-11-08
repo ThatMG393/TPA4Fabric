@@ -90,7 +90,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
 
         if (from == null) {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
-            incomingTPARequests.remove(targetUuid).accept();
+            incomingTPARequests.remove(targetUuid).deny();
 
             return CommandResultWrapper.of(CommandResult.SUCCESS, targetUuid);
         }

@@ -81,6 +81,5 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper receiver, 
 
     public void deny() {
         consume();
-        receiver.removeTPARequest(requester.uuid);
     }
 }
