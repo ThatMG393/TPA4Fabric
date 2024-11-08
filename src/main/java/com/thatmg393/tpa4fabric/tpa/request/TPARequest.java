@@ -28,6 +28,7 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper receiver, 
 
     private void consume() {
         expirationTimer.cancel();
+        TPA4Fabric.LOGGER.info("Consumed TPA request from " + requester.name);
     }
 
     public void accept() {
@@ -81,8 +82,5 @@ public record TPARequest(TPAPlayerWrapper requester, TPAPlayerWrapper receiver, 
     public void deny() {
         consume();
         receiver.removeTPARequest(requester.uuid);
-
-        requester.sendMessage(fromLang("tpa4fabric.message.requester.tpa.deny", receiver.name));
-        receiver.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.deny", requester.name));
     }
 }
