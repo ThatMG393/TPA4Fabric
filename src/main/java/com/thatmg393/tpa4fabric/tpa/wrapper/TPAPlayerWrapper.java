@@ -18,6 +18,7 @@ import com.thatmg393.tpa4fabric.tpa.request.callback.enums.TPAFailReason;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
+import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResultWrapper;
 
 import it.unimi.dsi.fastutil.Pair;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -49,60 +50,57 @@ public class TPAPlayerWrapper implements TPAStateCallback {
 
     private LinkedHashMap<String, TPARequest> incomingTPARequests = new LinkedHashMap<>(ModConfigManager.loadOrGetConfig().tpaRequestLimit);
 
-    public Optional<CommandResult> createNewTPARequest(TPAPlayerWrapper requester) {
-        if (requester.equals(this)) return Optional.of(CommandResult.TPA_SELF);
-        if (!allowsTPARequests()) return Optional.of(CommandResult.NOT_ALLOWED);
+    public CommandResultWrapper<?> createNewTPARequest(TPAPlayerWrapper requester) {
+        if (requester.equals(this)) return CommandResultWrapper.of(CommandResult.TPA_SELF);
+        if (!allowsTPARequests()) return CommandResultWrapper.of(CommandResult.NOT_ALLOWED);
         
         Pair<Boolean, Optional<Long>> result = requester.isOnCommandCooldown();
-        if (result.first()) return Optional.of(CommandResult.ON_COOLDOWN.setExtraData(result.second().get()));
+        if (result.first()) return CommandResultWrapper.of(CommandResult.ON_COOLDOWN, result.second().get());
         
-        if (hasExistingTPARequest(requester.uuid)) return Optional.of(CommandResult.HAS_EXISTING);
+        if (hasExistingTPARequest(requester.uuid)) return CommandResultWrapper.of(CommandResult.HAS_EXISTING);
         
         requester.markInCooldown();
         incomingTPARequests.put(
             requester.uuid, new TPARequest(requester, this, new Timer())
         );
 
-        return Optional.of(CommandResult.SUCCESS);
+        return CommandResultWrapper.of(CommandResult.SUCCESS);
     }
 
-    public Optional<CommandResult> acceptTPARequest(TPAPlayerWrapper from) {
-        if (isIncomingTPARequestEmpty()) return Optional.of(CommandResult.EMPTY_REQUESTS);
+    public CommandResultWrapper<?> acceptTPARequest(TPAPlayerWrapper from) {
+        if (isIncomingTPARequestEmpty()) return CommandResultWrapper.of(CommandResult.EMPTY_REQUESTS);
 
         if (from == null) {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
             incomingTPARequests.remove(targetUuid).accept();
-
-            CommandResult r = CommandResult.SUCCESS;
-            r.setExtraData(targetUuid);
             
-            return Optional.of(r);
+            return CommandResultWrapper.of(CommandResult.SUCCESS, targetUuid);
         }
 
-        if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
-        if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
+        if (from.equals(this)) return CommandResultWrapper.of(CommandResult.TPA_SELF);
+        if (!hasExistingTPARequest(from.uuid)) return CommandResultWrapper.of(CommandResult.NO_REQUEST);
 
         incomingTPARequests.remove(from.uuid).accept();
         
-        return Optional.of(CommandResult.SUCCESS);
+        return CommandResultWrapper.of(CommandResult.SUCCESS);
     }
 
-    public Optional<CommandResult> denyTPARequest(TPAPlayerWrapper from) {
-        if (isIncomingTPARequestEmpty()) return Optional.of(CommandResult.EMPTY_REQUESTS);
+    public CommandResultWrapper<?> denyTPARequest(TPAPlayerWrapper from) {
+        if (isIncomingTPARequestEmpty()) return CommandResultWrapper.of(CommandResult.EMPTY_REQUESTS);
 
         if (from == null) {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
             incomingTPARequests.remove(targetUuid).accept();
 
-            return Optional.of(CommandResult.SUCCESS.setExtraData(targetUuid));
+            return CommandResultWrapper.of(CommandResult.SUCCESS, targetUuid);
         }
 
-        if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
-        if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
+        if (from.equals(this)) return CommandResultWrapper.of(CommandResult.TPA_SELF);
+        if (!hasExistingTPARequest(from.uuid)) return CommandResultWrapper.of(CommandResult.NO_REQUEST);
 
         incomingTPARequests.remove(from.uuid).deny();
         
-        return Optional.of(CommandResult.SUCCESS);
+        return CommandResultWrapper.of(CommandResult.SUCCESS);
     }
 
     public Optional<CommandResult> goBackToLastCoordinates() {

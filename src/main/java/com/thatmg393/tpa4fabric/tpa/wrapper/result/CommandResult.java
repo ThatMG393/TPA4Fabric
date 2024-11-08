@@ -1,7 +1,5 @@
 package com.thatmg393.tpa4fabric.tpa.wrapper.result;
 
-import java.util.Optional;
-
 public enum CommandResult {
     SUCCESS,
 
@@ -16,19 +14,5 @@ public enum CommandResult {
 
     IGNORE,
 
-    NO_PREVIOUS_COORDS;
-
-    private Object extraData = null;
-
-    private CommandResult() { }
-
-    public CommandResult setExtraData(Object data) {
-        this.extraData = data;
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> Optional<T> getExtraData() {
-        return extraData == null ? Optional.empty() : Optional.of((T) extraData);
-    }
+    NO_PREVIOUS_COORDS
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import com.thatmg393.tpa4fabric.TPA4Fabric;
 import com.thatmg393.tpa4fabric.tpa.wrapper.TPAPlayerWrapper;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
+import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResultWrapper;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -52,9 +53,9 @@ public class TPAManager {
         TPAPlayerWrapper you = players.get(executer.getUuidAsString());
         TPAPlayerWrapper them = players.get(target.getUuidAsString());
 
-        CommandResult result = them.createNewTPARequest(you).orElse(CommandResult.IGNORE);
+        CommandResultWrapper<?> result = them.createNewTPARequest(you);
 
-        switch (result) {
+        switch (result.result()) {
             case SUCCESS:
                 you.sendMessage(fromLang("tpa4fabric.message.requester.tpa", them.name));
                 them.sendMessage(fromLang("tpa4fabric.message.receiver.tpa", you.name));
@@ -69,7 +70,7 @@ public class TPAManager {
                 return 0;
 
             case ON_COOLDOWN:
-                you.sendMessage(fromLang("tpa4fabric.message.fail.tpa_on_cooldown", result.<Long>getExtraData().get()));
+                you.sendMessage(fromLang("tpa4fabric.message.fail.tpa_on_cooldown", (Long) result.extraData().get()));
                 return 0;
 
             case HAS_EXISTING:
@@ -108,10 +109,10 @@ public class TPAManager {
         TPAPlayerWrapper you = players.get(executer.getUuidAsString());
         TPAPlayerWrapper them = target == null ? null : players.get(target.getUuidAsString());
         
-        CommandResult result = you.acceptTPARequest(them).orElse(CommandResult.IGNORE);
-        switch (result) {
+        CommandResultWrapper<?> result = you.acceptTPARequest(them);
+        switch (result.result()) {
             case SUCCESS:
-                result.<String>getExtraData().ifPresentOrElse((d) -> {
+                result.extraData().ifPresentOrElse((d) -> {
                     TPAPlayerWrapper tmpPlayer = players.get(d);
 
                     you.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.accept", tmpPlayer.name));
@@ -144,11 +145,11 @@ public class TPAManager {
         TPAPlayerWrapper you = players.get(executer.getUuidAsString());
         TPAPlayerWrapper them = target == null ? null : players.get(target.getUuidAsString());
 
-        CommandResult result = you.denyTPARequest(them).orElse(CommandResult.IGNORE);
+        CommandResultWrapper<?> result = you.denyTPARequest(them);
 
-        switch (result) {
+        switch (result.result()) {
             case SUCCESS:
-                result.<String>getExtraData().ifPresentOrElse((d) -> {
+                result.extraData().ifPresentOrElse((d) -> {
                     TPAPlayerWrapper tmpPlayer = players.get(d);
 
                     you.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.deny", tmpPlayer.name));
