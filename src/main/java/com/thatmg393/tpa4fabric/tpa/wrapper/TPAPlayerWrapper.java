@@ -73,14 +73,18 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             String targetUuid = incomingTPARequests.keySet().iterator().next();
             incomingTPARequests.remove(targetUuid).accept();
 
-            return Optional.of(CommandResult.SUCCESS.setExtraData(targetUuid));
-        } else {
-            if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
-            if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
+            TPA4Fabric.LOGGER.info("before return at accept!");
+            var r = Optional.<CommandResult>of(CommandResult.SUCCESS.setExtraData(targetUuid));
+            TPA4Fabric.LOGGER.info("we returnin bois!");
 
-            incomingTPARequests.remove(from.uuid).accept();
+            return r;
         }
 
+        if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
+        if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
+
+        incomingTPARequests.remove(from.uuid).accept();
+        
         return Optional.of(CommandResult.SUCCESS);
     }
 
@@ -92,13 +96,13 @@ public class TPAPlayerWrapper implements TPAStateCallback {
             incomingTPARequests.remove(targetUuid).accept();
 
             return Optional.of(CommandResult.SUCCESS.setExtraData(targetUuid));
-        } else {
-            if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
-            if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
-
-            incomingTPARequests.remove(from.uuid).deny();
         }
 
+        if (from.equals(this)) return Optional.of(CommandResult.TPA_SELF);
+        if (!hasExistingTPARequest(from.uuid)) return Optional.of(CommandResult.NO_REQUEST);
+
+        incomingTPARequests.remove(from.uuid).deny();
+        
         return Optional.of(CommandResult.SUCCESS);
     }
 

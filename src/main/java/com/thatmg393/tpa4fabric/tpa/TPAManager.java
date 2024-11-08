@@ -4,8 +4,6 @@ import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 
 import java.util.HashMap;
 
-import org.slf4j.event.Level;
-
 import com.thatmg393.tpa4fabric.TPA4Fabric;
 import com.thatmg393.tpa4fabric.tpa.wrapper.TPAPlayerWrapper;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
@@ -113,8 +111,8 @@ public class TPAManager {
         CommandResult result = you.acceptTPARequest(them).orElse(CommandResult.IGNORE);
         switch (result) {
             case SUCCESS:
-                result.<String>getExtraData().ifPresentOrElse((d) -> {
-                    TPAPlayerWrapper tmpPlayer = players.get(d);
+                result.getExtraData().ifPresentOrElse((d) -> {
+                    TPAPlayerWrapper tmpPlayer = players.get((String) d);
 
                     you.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.accept", tmpPlayer.name));
                     tmpPlayer.sendMessage(fromLang("tpa4fabric.message.requester.tpa.accept", you.name));
@@ -130,7 +128,7 @@ public class TPAManager {
                 return 0;
 
             case NO_REQUEST:
-                you.sendMessage(fromLang("tpa4fabric.message.fail.no_request_from_player"));
+                you.sendMessage(fromLang("tpa4fabric.message.fail.accept.no_request_from_player", them.name));
                 return 0;
 
             case TPA_SELF: // too lazy to account
@@ -167,7 +165,7 @@ public class TPAManager {
                 return 0;
 
             case NO_REQUEST:
-                you.sendMessage(fromLang("tpa4fabric.message.fail.no_request_from_player"));
+                you.sendMessage(fromLang("tpa4fabric.message.fail.deny.no_request_from_player", them.name));
                 return 0;
 
             case TPA_SELF: // too lazy to account
