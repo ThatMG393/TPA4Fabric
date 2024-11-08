@@ -111,8 +111,8 @@ public class TPAManager {
         CommandResult result = you.acceptTPARequest(them).orElse(CommandResult.IGNORE);
         switch (result) {
             case SUCCESS:
-                result.getExtraData().ifPresentOrElse((d) -> {
-                    TPAPlayerWrapper tmpPlayer = players.get((String) d);
+                result.<String>getExtraData().ifPresentOrElse((d) -> {
+                    TPAPlayerWrapper tmpPlayer = players.get(d);
 
                     you.sendMessage(fromLang("tpa4fabric.message.receiver.tpa.accept", tmpPlayer.name));
                     tmpPlayer.sendMessage(fromLang("tpa4fabric.message.requester.tpa.accept", you.name));
