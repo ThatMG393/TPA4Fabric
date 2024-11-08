@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [v0.0.4+release.1] - 2024-11-08
+### New Features
+- [`35fa87c`](https://github.com/ThatMG393/TPA4Fabric/commit/35fa87ca7fe7fbed92f1487bb894f59e5a541e2e) - proper CommandResult with optional data *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`157c1cd`](https://github.com/ThatMG393/TPA4Fabric/commit/157c1cddfb603adf1a72c8e44d4b53439f9c9fb6) - include remaining time to wait on cooldown message *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`7381c12`](https://github.com/ThatMG393/TPA4Fabric/commit/7381c1203c7d43657474f431eda5c567bf946b4b) - load previous position after teleport *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+
+### Bug Fixes
+- [`5f9e9f5`](https://github.com/ThatMG393/TPA4Fabric/commit/5f9e9f504b02628dea4e6d2dc0dd72c4e8e5f00b) - request still being accepted even if you deny it *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`e349b2f`](https://github.com/ThatMG393/TPA4Fabric/commit/e349b2feb7c3373954af5ccc8f6299123f894a1b) - remove duplicate deny message logic *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`ff9390c`](https://github.com/ThatMG393/TPA4Fabric/commit/ff9390c8782362c21d5b8792f02986d512740bcf) - initialize `running` properly *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`54f35c1`](https://github.com/ThatMG393/TPA4Fabric/commit/54f35c100db1e5d9df04bb09e1d090a2695c3099) - load chunks on the correct server world *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`31860eb`](https://github.com/ThatMG393/TPA4Fabric/commit/31860ebb9f03c9807a7e8bb276d1dc88da5ae717) - wrong type casting on `TPAManager#tpa()` *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`988beae`](https://github.com/ThatMG393/TPA4Fabric/commit/988beaea67785f0d503b4d997b53dc0f199e0d26) - make `ChunkTicketType``after_teleport` constant *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`14aeea2`](https://github.com/ThatMG393/TPA4Fabric/commit/14aeea23fdda786c19cc78f113132dc90044a59c) - also set previous chunkpos when invoking tpaback *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`b713772`](https://github.com/ThatMG393/TPA4Fabric/commit/b713772f0b52f8ebe71b2caed0e52c7b64368cd6) - un-async player teleportation (fixes a C2ME issue) *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`19fe18a`](https://github.com/ThatMG393/TPA4Fabric/commit/19fe18ae34b42aa1550bfbfbc737aa4a49178091) - fix the empty world when joining *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`ea9851e`](https://github.com/ThatMG393/TPA4Fabric/commit/ea9851e9f7231fc7fa77ed6e75eb078d00edd0fd) - just check for UUID *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`6635a1c`](https://github.com/ThatMG393/TPA4Fabric/commit/6635a1cf0c60c31922957f5398b817a1b9f915c1) - wrong check fix *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+
+### Tests
+- [`bba8d25`](https://github.com/ThatMG393/TPA4Fabric/commit/bba8d25fd20322e00c3cc8fa936718ad3fbf06e3) - head scratching ++ *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`a2881bb`](https://github.com/ThatMG393/TPA4Fabric/commit/a2881bbc26a5187688415d609b2d02ff963e265e) - more head scratching *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`4fc2eb3`](https://github.com/ThatMG393/TPA4Fabric/commit/4fc2eb36f342f740d3adfb0e95fd70401bc2426a) - debug logsss *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`14104fb`](https://github.com/ThatMG393/TPA4Fabric/commit/14104fb68858670aaf5dd1326ed81593a61cd413) - idek what i did l *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`1584316`](https://github.com/ThatMG393/TPA4Fabric/commit/1584316c2880519ee1dfaf5e6f5d1052252f4d90) - more debug *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`86c343f`](https://github.com/ThatMG393/TPA4Fabric/commit/86c343f8575df8b9d9fd6ddf70b621f4f4cc8caa) - add debug log *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+- [`7305cb7`](https://github.com/ThatMG393/TPA4Fabric/commit/7305cb73a9ba648b6dd05749b65fd83935b7fe5c) - try to re-set `ServerPlayerEntity` reference after player respawn *(commit by [@ThatMG393](https://github.com/ThatMG393))*
+
+
 ## [v0.0.3+release.2] - 2024-10-24
 ### Other Changes
 - [`eee14bc`](https://github.com/ThatMG393/TPA4Fabric/commit/eee14bc9979d70cc680dda580d57fbd7b7c2874c) - Fix double "Teleporting in Xs..." *(commit by [@ThatMG393](https://github.com/ThatMG393))*
@@ -58,3 +87,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [v0.0.3+release.1]: https://github.com/ThatMG393/TPA4Fabric/compare/v0.0.2+release.1...v0.0.3+release.1
 [v0.0.3+release.2]: https://github.com/ThatMG393/TPA4Fabric/compare/v0.0.3+release.1...v0.0.3+release.2
+[v0.0.4+release.1]: https://github.com/ThatMG393/TPA4Fabric/compare/v0.0.3+release.2...v0.0.4+release.1
