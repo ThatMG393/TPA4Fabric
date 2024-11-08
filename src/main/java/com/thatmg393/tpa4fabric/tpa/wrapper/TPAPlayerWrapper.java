@@ -187,6 +187,13 @@ public class TPAPlayerWrapper implements TPAStateCallback {
 
     public void teleport(TeleportParameters params) {
         player.getServer().executeSync(() -> {
+            player.getServerWorld().getChunkManager().addTicket(
+                AFTER_TELEPORT,
+                lastTPALocationChunkPos,
+                3,
+                lastTPALocationChunkPos
+            );
+
             player.teleport(
                 params.dimension(),
                 params.coordinates().x(),
@@ -194,13 +201,6 @@ public class TPAPlayerWrapper implements TPAStateCallback {
                 params.coordinates().z(),
                 player.getYaw(),
                 player.getPitch()
-            );
-
-            player.getServerWorld().getChunkManager().addTicket(
-                AFTER_TELEPORT,
-                lastTPALocationChunkPos,
-                3,
-                lastTPALocationChunkPos
             );
         });
     }
