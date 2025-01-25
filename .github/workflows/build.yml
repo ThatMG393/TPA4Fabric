@@ -38,6 +38,7 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: 'temurin'
+          cache: 'gradle'
 
       - name: Make gradle wrapper executable
         run: chmod +x ./gradlew
@@ -55,18 +56,17 @@ jobs:
 
       - name: Update CHANGELOG.md
         if: ${{ matrix.java == '17' && startsWith(steps.build_bin.outputs.binver, 'v') }}
-        uses: requarks/changelog-action@v1.10.2
+        uses: requarks/changelog-action@v1
         with:
           token: ${{ secrets.GH_TOKEN }}
           tag: ${{ github.ref_name }}
-          includeInvalidCommits: true
-          excludeTypes: ''
+          restrictToTypes: 'feat,fix,misc,chore' # others are ci,refactor,cleanup
           useGitmojis: false
           reverseOrder: true
 
       - name: Upload to Modrinth and Github
         if: ${{ matrix.java == '17' && startsWith(steps.build_bin.outputs.binver, 'v') }}
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: Kir-Antipov/mc-publish@v3
         with: 
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           github-token: ${{ secrets.GH_TOKEN }}
