@@ -5,6 +5,7 @@ import static com.thatmg393.tpa4fabric.utils.MCTextUtils.fromLang;
 import java.util.HashMap;
 
 import com.thatmg393.tpa4fabric.TPA4Fabric;
+import com.thatmg393.tpa4fabric.tpa.request.type.RequestType;
 import com.thatmg393.tpa4fabric.tpa.wrapper.TPAPlayerWrapper;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResultWrapper;
@@ -77,6 +78,22 @@ public class TPAManager {
                 you.sendMessage(fromLang("tpa4fabric.message.fail.has_existing_tpa"));
                 return 0;
 
+            default:
+                TPA4Fabric.LOGGER.error("Unknown command result: " + result);
+                return 0;
+        }
+    }
+
+    public int tpahere(
+        ServerPlayerEntity executer,
+        ServerPlayerEntity target
+    ) {
+        TPAPlayerWrapper you = players.get(executer.getUuidAsString());
+        TPAPlayerWrapper them = players.get(target.getUuidAsString());
+
+        CommandResultWrapper<?> result = you.createNewTPARequest(RequestType.HERE, them);
+
+        switch (result) {
             default:
                 TPA4Fabric.LOGGER.error("Unknown command result: " + result);
                 return 0;

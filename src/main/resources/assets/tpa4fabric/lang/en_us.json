@@ -2,7 +2,8 @@
     "tpa4fabric.message.error.tpa_to_self": "You cannot teleport to yourself.",
     "tpa4fabric.message.fail.requester.moved": "You moved! Cancelling teleport...",
     "tpa4fabric.message.fail.receiver.requester_moved": "The other player moved! Cancelling teleport...",
-    "tpa4fabric.message.fail.target_dead_or_disconnected": "The player you were teleporting to has died/is dead/has disconnected from this server.",
+    "tpa4fabric.message.fail.requester_dead_or_disconnected": "The player you were teleporting to has died/is dead/has disconnected from this server.",
+    "tpa4fabric.message.fail.receiver_dead_or_disconnected": "The player who was teleporting to you died/is dead/has disconnected from this server.",
     "tpa4fabric.message.fail.tpa_on_cooldown": "You're currently on cooldown! Wait for another {} seconds...",
     "tpa4fabric.message.fail.has_existing_tpa": "You currently have an already existing TPA request to that player!",
     "tpa4fabric.message.fail.no_previous_coordinates": "You can't use TPA back because you have not teleported to any player yet.",
@@ -28,6 +29,11 @@
     "tpa4fabric.message.requester.tpa.accept": "{} accepted your TPA request.",
     "tpa4fabric.message.requester.tpa.deny": "{} denied your TPA request.",
     "tpa4fabric.message.requester.tpa.expire": "Your TPA request to {} expired.",
+
+    "tpa4fabric.message.requester.tpahere": "You sent a TPA here request to {}.",
+    "tpa4fabric.message.requester.tpahere.accept": "{} accepted your TPA here request.",
+    "tpa4fabric.message.requester.tpahere.deny": "{} denied your TPA here request.",
+    "tpa4fabric.message.requester.tpahere.expire": "Your TPA here request to {} expired.",
 
     "tpa4fabric.message.fail.tpa_not_allowed": "This player doesn't accept TPA requests currently."
 }

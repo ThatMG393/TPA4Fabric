@@ -98,7 +98,7 @@ public class CountdownTimer extends TimerTask {
     @Override
     public void run() {
         now += tickRate;
-        remaining -= tickRate; // Subtract tickRate from remaining instead of now
+        remaining -= tickRate;
         
         if (remaining <= 0) {
             internalStop();
@@ -106,9 +106,6 @@ public class CountdownTimer extends TimerTask {
         } else callback.onTick(CountdownTimer.this, now);
     }
 
-    /**
-     * TimerCallback interface defines the methods that should be implemented to receive timer events.
-     */
     public static interface TimerCallback {
         /**
          * Called on each tick of the timer.
@@ -116,7 +113,7 @@ public class CountdownTimer extends TimerTask {
          * @param myself The current instance of the CountdownTimer.
          * @param delta The time elapsed since the timer started, in milliseconds.
          */
-        public void onTick(CountdownTimer myself, long delta);
+        public default void onTick(CountdownTimer myself, long delta) { }
         
         /**
          * Called when the timer is stopped manually before completion.
@@ -124,13 +121,13 @@ public class CountdownTimer extends TimerTask {
          * @param myself The current instance of the CountdownTimer.
          * @param remaining The remaining time in milliseconds when the timer was stopped.
          */
-        public void onStop(CountdownTimer myself, long remaining);
+        public default void onStop(CountdownTimer myself, long remaining) { }
         
         /**
          * Called when the timer finishes naturally (reaches zero).
          * 
          * @param myself The current instance of the CountdownTimer.
          */
-        public void onFinished(CountdownTimer myself);
+        public default void onFinished(CountdownTimer myself) { }
     }
 }

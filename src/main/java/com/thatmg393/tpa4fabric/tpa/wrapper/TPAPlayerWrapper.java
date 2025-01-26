@@ -8,13 +8,15 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Optional;
-import java.util.Timer;
 
 import com.thatmg393.tpa4fabric.TPA4Fabric;
 import com.thatmg393.tpa4fabric.config.ModConfigManager;
+import com.thatmg393.tpa4fabric.tpa.request.TPAHereRequest;
 import com.thatmg393.tpa4fabric.tpa.request.TPARequest;
+import com.thatmg393.tpa4fabric.tpa.request.base.BaseRequest;
 import com.thatmg393.tpa4fabric.tpa.request.callback.TPAStateCallback;
 import com.thatmg393.tpa4fabric.tpa.request.callback.enums.TPAFailReason;
+import com.thatmg393.tpa4fabric.tpa.request.type.RequestType;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.Coordinates;
 import com.thatmg393.tpa4fabric.tpa.wrapper.models.TeleportParameters;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
@@ -48,21 +50,34 @@ public class TPAPlayerWrapper implements TPAStateCallback {
 
     private boolean allowTPARequests = ModConfigManager.loadOrGetConfig().defaultAllowTPARequests;
 
-    private LinkedHashMap<String, TPARequest> incomingTPARequests = new LinkedHashMap<>(ModConfigManager.loadOrGetConfig().tpaRequestLimit);
+    private LinkedHashMap<String, BaseRequest> incomingTPARequests = new LinkedHashMap<>(ModConfigManager.loadOrGetConfig().tpaRequestLimit);
 
-    public CommandResultWrapper<?> createNewTPARequest(TPAPlayerWrapper requester) {
-        if (requester.equals(this)) return CommandResultWrapper.of(CommandResult.TPA_SELF);
+    public CommandResultWrapper<?> createNewTPARequest(RequestType type, TPAPlayerWrapper requester) {
+        // target -> player to teleport to
+
+        if (target.equals(this)) return CommandResultWrapper.of(CommandResult.TPA_SELF);
         if (!allowsTPARequests()) return CommandResultWrapper.of(CommandResult.NOT_ALLOWED);
         
-        Pair<Boolean, Optional<Long>> result = requester.isOnCommandCooldown();
+        Pair<Boolean, Optional<Long>> result = target.isOnCommandCooldown();
         if (result.first()) return CommandResultWrapper.of(CommandResult.ON_COOLDOWN, result.second().get());
         
-        if (hasExistingTPARequest(requester.uuid)) return CommandResultWrapper.of(CommandResult.HAS_EXISTING);
+        if (hasExistingTPARequest(target.uuid)) return CommandResultWrapper.of(CommandResult.HAS_EXISTING);
         
-        requester.markInCooldown();
-        incomingTPARequests.put(
-            requester.uuid, new TPARequest(requester, this, new Timer())
-        );
+        target.markInCooldown();
+
+        BaseRequest request = null;
+
+        switch (type) {
+            case NORMAL:
+                request = new TPARequest(requester, this);
+            break;
+            
+            case HERE:
+                request = new TPAHereRequest(this, requester);
+            break;
+        }
+
+        incomingTPARequests.put(requester.uuid, request);
 
         return CommandResultWrapper.of(CommandResult.SUCCESS);
     }
@@ -107,14 +122,16 @@ public class TPAPlayerWrapper implements TPAStateCallback {
         if (lastTPALocation == null) return Optional.of(CommandResult.NO_PREVIOUS_COORDS);
 
         /* TODO:
-         * 1. Make an abstract(?) Request class
-         * 2. Make TPABackRequest and extend Request (will also be useful for /tpahere)
-         * 3. magic.
+         * 1. Make an abstract(?) Request class /
+         * 2. Make TPABackRequest and extend Request (will also be useful for /tpahere) X
+         * 3. magic. X
          */
         lastTPALocationChunkPos = player.getServerWorld().getChunk((int) lastTPALocation.coordinates().x(), (int) lastTPALocation.coordinates().y()).getPos();
         teleport(lastTPALocation);
 
-        lastTPALocation = null; // consume
+        if (ModConfigManager.loadOrGetConfig().oneTimeTPABack)
+            lastTPALocation = null; // consume
+        
         return Optional.of(CommandResult.SUCCESS);
     }
 
@@ -226,8 +243,12 @@ public class TPAPlayerWrapper implements TPAStateCallback {
                 sendMessage(fromLang("tpa4fabric.message.fail.receiver.requester_moved"));
             break;
 
-            case TARGET_DEAD_OR_DISCONNECTED:
-                sendMessage(fromLang("tpa4fabric.message.fail.target_dead_or_disconnected"));
+            case RECEIVER_DEAD_OR_DISCONNECTED:
+                sendMessage(fromLang("tpa4fabric.message.fail.receiver_dead_or_disconnected"));
+            break;
+
+            case REQUESTER_DEAD_OR_DISCONNECTED:
+                sendMessage(fromLang("tpa4fabric.message.fail.requester_dead_or_disconnected"));
             break;
         }
     }
