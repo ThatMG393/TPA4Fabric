@@ -23,6 +23,7 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResult;
 import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResultWrapper;
 
 import it.unimi.dsi.fastutil.Pair;
+import net.minecraft.network.packet.s2c.play.PositionFlag;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerWorld;
@@ -214,8 +215,10 @@ public class TPAPlayerWrapper implements TPAStateCallback {
                 params.coordinates().x(),
                 params.coordinates().y(),
                 params.coordinates().z(),
+                PositionFlag.combine(PositionFlag.DELTA, PositionFlag.ROT),
                 player.getYaw(),
-                player.getPitch()
+                player.getPitch(),
+                false
             );
         });
     }
