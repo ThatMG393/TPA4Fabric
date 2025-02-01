@@ -52,7 +52,7 @@ public class TPAPlayerWrapper implements TPAStateCallback {
 
     private LinkedHashMap<String, BaseRequest> incomingTPARequests = new LinkedHashMap<>(ModConfigManager.loadOrGetConfig().tpaRequestLimit);
 
-    public CommandResultWrapper<?> createNewTPARequest(RequestType type, TPAPlayerWrapper requester) {
+    public CommandResultWrapper<?> createNewTPARequest(RequestType type, TPAPlayerWrapper target) {
         // target -> player to teleport to
 
         if (target.equals(this)) return CommandResultWrapper.of(CommandResult.TPA_SELF);
@@ -69,15 +69,15 @@ public class TPAPlayerWrapper implements TPAStateCallback {
 
         switch (type) {
             case NORMAL:
-                request = new TPARequest(requester, this);
+                request = new TPARequest(target, this);
             break;
             
             case HERE:
-                request = new TPAHereRequest(this, requester);
+                request = new TPAHereRequest(this, target);
             break;
         }
 
-        incomingTPARequests.put(requester.uuid, request);
+        incomingTPARequests.put(target.uuid, request);
 
         return CommandResultWrapper.of(CommandResult.SUCCESS);
     }

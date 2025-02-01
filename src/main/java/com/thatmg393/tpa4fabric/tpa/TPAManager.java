@@ -13,6 +13,7 @@ import com.thatmg393.tpa4fabric.tpa.wrapper.result.CommandResultWrapper;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 
 public class TPAManager {
     private static final TPAManager INSTANCE = new TPAManager();
@@ -54,7 +55,7 @@ public class TPAManager {
         TPAPlayerWrapper you = players.get(executer.getUuidAsString());
         TPAPlayerWrapper them = players.get(target.getUuidAsString());
 
-        CommandResultWrapper<?> result = them.createNewTPARequest(you);
+        CommandResultWrapper<?> result = them.createNewTPARequest(RequestType.NORMAL, you);
 
         switch (result.result()) {
             case SUCCESS:
@@ -93,7 +94,11 @@ public class TPAManager {
 
         CommandResultWrapper<?> result = you.createNewTPARequest(RequestType.HERE, them);
 
-        switch (result) {
+        switch (result.result()) {
+            case SUCCESS:
+                you.sendMessage(Text.literal("success!?"));
+                return 0;
+
             default:
                 TPA4Fabric.LOGGER.error("Unknown command result: " + result);
                 return 0;
