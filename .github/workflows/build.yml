@@ -21,7 +21,7 @@ jobs:
       contents: write
     strategy:
       matrix:
-        java: [ 17, 21 ]
+        java: [ 21 ]
         os: [ ubuntu-22.04 ]
     runs-on: ${{ matrix.os }}
     steps:
